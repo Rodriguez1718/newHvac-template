@@ -115,16 +115,72 @@ const isSlider = variant === "slider";
   <!-- Accent bar at top -->
   <div class="absolute top-0 left-0 w-full h-1 bg-brand-highlight z-[5]"></div>
 
-  <!-- 3-layer diagonal white slope (left-to-right tilt: narrow top, wide bottom) -->
-  <div class="hero-slope absolute inset-0 z-[1]">
+  <!-- Left white slope (untouched) -->
+  <div class="hero-slope-left absolute inset-0 z-[1]">
     <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Layer 1: solid white -->
       <polygon points="0,0 480,0 820,800 0,800" fill="white" />
-      <!-- Layer 2: semi-transparent -->
-      <polygon points="480,0 600,0 940,800 820,800" fill="white" opacity="0.55" />
-      <!-- Layer 3: faintest -->
-      <polygon points="600,0 700,0 1040,800 940,800" fill="white" opacity="0.25" />
     </svg>
+  </div>
+
+  <!-- Image slopes (visible from start, slide right on carousel change) -->
+  <div class="hero-image-slopes absolute inset-0 z-[1] pointer-events-none">
+    {slides.map((slide, i) => (
+      <div class={`slope-set ${i === 0 ? 'active' : ''}`} data-slope-set={i}>
+        <!-- Slope 1 -->
+        <div class="slope-clip slope-1">
+          <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id={`clip-slope-1-${i}`}>
+                <polygon points="480,0 600,0 940,800 820,800" />
+              </clipPath>
+            </defs>
+            <image 
+              href={slide.bgImage} 
+              width="1440" 
+              height="800" 
+              preserveAspectRatio="xMidYMid slice"
+              clip-path={`url(#clip-slope-1-${i})`}
+            />
+          </svg>
+        </div>
+
+        <!-- Slope 2 -->
+        <div class="slope-clip slope-2">
+          <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id={`clip-slope-2-${i}`}>
+                <polygon points="600,0 700,0 1040,800 940,800" />
+              </clipPath>
+            </defs>
+            <image 
+              href={slide.bgImage} 
+              width="1440" 
+              height="800" 
+              preserveAspectRatio="xMidYMid slice"
+              clip-path={`url(#clip-slope-2-${i})`}
+            />
+          </svg>
+        </div>
+
+        <!-- Slope 3 -->
+        <div class="slope-clip slope-3">
+          <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id={`clip-slope-3-${i}`}>
+                <polygon points="700,0 1440,0 1440,800 1040,800" />
+              </clipPath>
+            </defs>
+            <image 
+              href={slide.bgImage} 
+              width="1440" 
+              height="800" 
+              preserveAspectRatio="xMidYMid slice"
+              clip-path={`url(#clip-slope-3-${i})`}
+            />
+          </svg>
+        </div>
+      </div>
+    ))}
   </div>
 
   <!-- Content — pinned bottom-left -->
@@ -274,9 +330,60 @@ const isSlider = variant === "slider";
     background: #f5f5f5;
   }
 
-  /* The slope SVG layer */
-  .hero-slope {
+  /* Left white slope (static) */
+  .hero-slope-left {
     pointer-events: none;
+  }
+
+  /* Image slopes container */
+  .hero-image-slopes {
+    pointer-events: none;
+  }
+
+  /* Slope set - each carousel slide has its own set */
+  .slope-set {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  .slope-set.active {
+    opacity: 1;
+  }
+
+  /* Individual slope clips - visible from start, slide right on activation */
+  .slope-clip {
+    position: absolute;
+    inset: 0;
+    transform: translateX(0);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* When slope-set becomes active, trigger slide animation */
+  .slope-set.active .slope-1 {
+    animation: slideToRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.1s;
+  }
+
+  .slope-set.active .slope-2 {
+    animation: slideToRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.3s;
+  }
+
+  .slope-set.active .slope-3 {
+    animation: slideToRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes slideToRight {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(200px);
+    }
   }
 
   /* Title & subtitle sit on white slope — dark text */
@@ -427,6 +534,10 @@ const isSlider = variant === "slider";
       dots[current].classList.remove('active');
       if (bgs[current]) bgs[current].classList.replace('opacity-100', 'opacity-0');
 
+      // Hide current slope set
+      var slopeSets = document.querySelectorAll('[data-slope-set]');
+      if (slopeSets[current]) slopeSets[current].classList.remove('active');
+
       current = index;
 
       slides[current].classList.add('active');
@@ -434,6 +545,18 @@ const isSlider = variant === "slider";
       slides[current].style.width = '';
       dots[current].classList.add('active');
       if (bgs[current]) bgs[current].classList.replace('opacity-0', 'opacity-100');
+
+      // Show new slope set + retrigger animation
+      if (slopeSets[current]) {
+        slopeSets[current].classList.add('active');
+        // Reset animation
+        var slopeClips = slopeSets[current].querySelectorAll('.slope-clip');
+        slopeClips.forEach(function(clip) {
+          clip.style.animation = 'none';
+          clip.offsetHeight; // Force reflow
+          clip.style.animation = '';
+        });
+      }
 
       startProgress();
     }
