@@ -52,16 +52,17 @@ const { badge = "OUR SERVICES", title, description, categories } = Astro.props;
       </div>
 
       <!-- Service Cards Grid -->
-      <div class="relative min-h-[800px] sm:min-h-[600px] lg:min-h-[400px]">
+      <div class="relative" style="padding-bottom: 3rem;">
         {categories.map((category, catIndex) => (
           <div
             class="service-content absolute inset-0 transition-opacity duration-500"
             data-content={catIndex}
-            style={catIndex === 0 ? "opacity: 1; pointer-events: auto;" : "opacity: 0; pointer-events: none;"}
+            style={catIndex === 0 ? "opacity: 1; pointer-events: auto; position: relative;" : "opacity: 0; pointer-events: none;"}
           >
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5" data-animate-stagger>
               {category.services.map((service, serviceIndex) => {
                 const Tag = service.href ? 'a' : 'div';
+                const cardNumber = String(serviceIndex + 1).padStart(2, '0');
                 return (
                   <Tag
                     {...(service.href ? { href: service.href } : {})}
@@ -87,6 +88,9 @@ const { badge = "OUR SERVICES", title, description, categories } = Astro.props;
                         </div>
                       )}
                     </div>
+
+                    {/* Card number bottom-right */}
+                    <span class="svc-card-number">{cardNumber}</span>
                   </Tag>
                 );
               })}
@@ -103,10 +107,36 @@ const { badge = "OUR SERVICES", title, description, categories } = Astro.props;
     position: relative;
     background: var(--background);
   }
+  .svc-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/aircon.png');
+    background-size: 65%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .svc-section::before {
+      background-size: 75%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .svc-section::before {
+      background-size: 90%;
+    }
+  }
 
   .svc-body {
-    background: #fff;
-    padding: 4rem 0 5rem;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 4rem 0 6rem;
+    position: relative;
+    z-index: 1;
   }
 
   /* ─── Header ─── */
@@ -126,6 +156,7 @@ const { badge = "OUR SERVICES", title, description, categories } = Astro.props;
     display: inline-block;
     padding: 0.4rem 1rem;
     background: var(--brand-primary);
+    border-left: 3px solid var(--brand-highlight);
   }
 
   .svc-title {
@@ -272,6 +303,27 @@ const { badge = "OUR SERVICES", title, description, categories } = Astro.props;
     background: var(--brand-highlight);
     color: var(--brand-primary);
     transform: translateX(4px);
+  }
+
+  .svc-card-number {
+    position: absolute;
+    bottom: -0.5rem;
+    right: 1rem;
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(0, 0, 0, 0.08);
+    text-stroke: 2px rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+    user-select: none;
+    transition: -webkit-text-stroke 0.3s ease, text-stroke 0.3s ease, color 0.3s ease;
+  }
+  .svc-card:hover .svc-card-number {
+    color: rgba(0, 0, 0, 0.08);
+    -webkit-text-stroke: 0;
+    text-stroke: 0;
   }
 </style>
 

@@ -22,7 +22,8 @@ const {
   phone = siteConfig.contact.phoneFormatted,
   features = [
     { icon: "siren", text: "24/7 Emergency Service" },
-    { icon: "award", text: "Experienced & Certified Technicians" }
+    { icon: "award", text: "Experienced & Certified Technicians" },
+    { icon: "shield", text: "Licensed & Insured" }
   ],
   borderColor
 } = Astro.props;
@@ -30,6 +31,7 @@ const {
 const iconSvgs: Record<string, string> = {
   siren: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18v-6a5 5 0 1 1 10 0v6"></path><path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z"></path><path d="M21 12h1"></path><path d="M18.5 4.5 18 5"></path><path d="M2 12h1"></path><path d="M12 2v1"></path><path d="m4.929 4.929.707.707"></path><path d="M12 12v6"></path></svg>`,
   award: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path><circle cx="12" cy="8" r="6"></circle></svg>`,
+  shield: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
 };
 
 const borderStyle = borderColor ? `border-top-color: ${borderColor}; border-bottom-color: ${borderColor};` : "";
@@ -72,8 +74,6 @@ const borderStyle = borderColor ? `border-top-color: ${borderColor}; border-bott
 <style>
   .cta-strip {
     background: var(--brand-primary);
-    border-top: 3px solid var(--brand-highlight);
-    border-bottom: 3px solid var(--brand-highlight);
     padding: 1.5rem 0;
   }
 
@@ -116,14 +116,14 @@ const borderStyle = borderColor ? `border-top-color: ${borderColor}; border-bott
     flex-direction: column;
   }
   .cta-phone-label {
-    font-size: 0.7rem;
+    font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: rgba(255,255,255,0.5);
   }
   .cta-phone-number {
-    font-size: 1.35rem;
+    font-size: 2.5rem;
     font-weight: 800;
     color: #fff;
     text-decoration: none;
@@ -136,9 +136,9 @@ const borderStyle = borderColor ? `border-top-color: ${borderColor}; border-bott
 
   .cta-features {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .cta-feature {

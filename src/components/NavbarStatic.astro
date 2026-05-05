@@ -351,8 +351,13 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     display: none;
     height: 72px;
     gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
-  @media (min-width: 1024px) { .nb-service-nav { display: flex; } }
+  .nb-service-nav::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 1280px) { .nb-service-nav { display: flex; } }
 
   .nb-nav-item {
     position: relative;
@@ -364,10 +369,10 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0 1.25rem;
+    padding: 0 1rem;
     height: 100%;
     font-family: 'Inter', sans-serif;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--brand-primary);
     text-decoration: none;
@@ -383,8 +388,8 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
   .nb-nav-underline {
     position: absolute;
     bottom: 0;
-    left: 1.25rem;
-    right: 1.25rem;
+    left: 1rem;
+    right: 1rem;
     height: 3px;
     background: var(--brand-highlight);
     transform: scaleX(0);
@@ -489,7 +494,7 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     margin-left: auto;
     flex-shrink: 0;
   }
-  @media (min-width: 1024px) { .nb-actions { display: flex; } }
+  @media (min-width: 1280px) { .nb-actions { display: flex; } }
 
   .nb-action-btn {
     display: flex;
@@ -591,7 +596,7 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     flex-shrink: 0;
     border-radius: 8px;
   }
-  @media (min-width: 1024px) { .nb-hamburger { display: none; } }
+  @media (min-width: 1280px) { .nb-hamburger { display: none; } }
   .nb-hamburger:hover {
     color: var(--brand-secondary);
     background: var(--muted);

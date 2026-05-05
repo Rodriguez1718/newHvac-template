@@ -124,6 +124,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     display: inline-block;
     padding: 0.4rem 1rem;
     background: var(--brand-primary);
+    border-left: 3px solid var(--brand-highlight);
   }
 
   .tm-title {
@@ -153,6 +154,8 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     overflow: hidden;
     cursor: grab;
     user-select: none;
+    padding: 1rem 0;
+    margin: -1rem 0;
   }
   .tm-viewport:active {
     cursor: grabbing;
@@ -170,7 +173,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
   .tm-slide {
     flex-shrink: 0;
     width: calc(100% / 3);
-    padding: 0 0.625rem;
+    padding: 0 0.75rem;
     box-sizing: border-box;
   }
 
@@ -178,15 +181,17 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
   .tm-card {
     position: relative;
     background: #fff;
-    border: 1px solid rgba(0,0,0,0.18);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
     overflow: hidden;
     transition: all 0.35s ease;
     height: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
   .tm-card:hover {
     border-color: var(--brand-highlight);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 
   .tm-card-strip {
@@ -204,7 +209,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
   }
 
   .tm-card-inner {
-    padding: 1.75rem 1.5rem;
+    padding: 2rem 1.75rem;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -219,13 +224,14 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
   }
 
   .tm-quote {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--brand-tertiary);
     border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px;
     color: var(--brand-primary);
     transition: all 0.3s ease;
   }
@@ -233,6 +239,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     background: var(--brand-highlight);
     border-color: var(--brand-highlight);
     color: var(--brand-primary);
+    transform: scale(1.05);
   }
 
   .tm-stars {
@@ -258,14 +265,15 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     border-top: 1px solid rgba(0,0,0,0.08);
   }
   .tm-avatar {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     background: var(--brand-primary);
     color: var(--brand-highlight);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 800;
     letter-spacing: 0.05em;
     flex-shrink: 0;
@@ -274,6 +282,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
   .tm-card:hover .tm-avatar {
     background: var(--brand-highlight);
     color: var(--brand-primary);
+    transform: scale(1.08);
   }
   .tm-author-info { display: flex; flex-direction: column; }
   .tm-name {
@@ -299,9 +308,10 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
   }
 
   .tm-arrow {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 1px solid rgba(0,0,0,0.18);
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid rgba(0,0,0,0.12);
+    border-radius: 50%;
     background: #fff;
     color: var(--brand-primary);
     display: flex;
@@ -309,11 +319,18 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
   .tm-arrow:hover {
     background: var(--brand-highlight);
     color: var(--brand-primary);
     border-color: var(--brand-highlight);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .tm-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   .tm-dots {
@@ -322,17 +339,21 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     align-items: center;
   }
   .tm-dots :global(button) {
-    width: 24px;
-    height: 3px;
+    width: 28px;
+    height: 4px;
     border: none;
-    background: rgba(0,0,0,0.15);
+    border-radius: 2px;
+    background: rgba(0,0,0,0.12);
     cursor: pointer;
     padding: 0;
     transition: all 0.3s ease;
   }
+  .tm-dots :global(button:hover) {
+    background: rgba(0,0,0,0.2);
+  }
   .tm-dots :global(button.is-active) {
     background: var(--brand-highlight);
-    width: 40px;
+    width: 48px;
   }
 
   /* ─── Responsive ─── */

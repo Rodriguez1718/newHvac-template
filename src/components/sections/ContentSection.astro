@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { getLocationText } from "@/config/site"
 
 interface Props {
@@ -30,43 +29,60 @@ const title = getLocationText(rawTitle);
 const description = getLocationText(rawDescription);
 const features = rawFeatures.map(getLocationText);
 
-const DEFAULT_IMAGE = "https://www.missionviejoair.com/wp-content/uploads/2024/06/How-to-Pick-the-Best-HVAC-Repair-Contractor.jpg";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&q=80";
+const DEFAULT_SECONDARY = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80";
 const mainImage = DEFAULT_IMAGE;
+const secondaryImage = DEFAULT_SECONDARY;
 const isRight = imagePosition === "right";
 ---
 
 <section class="cs-wrapper">
+  <!-- SVG clip-path definition -->
+  <svg width="0" height="0" style="position: absolute;">
+    <defs>
+      <clipPath id="customClip" clipPathUnits="objectBoundingBox">
+        <path d="M 0.05, 0.05 L 0.95, 0.05 L 0.95, 0.48 L 0.48, 0.48 L 0.48, 0.95 L 0.05, 0.95 Z" />
+      </clipPath>
+    </defs>
+  </svg>
+
   <!-- Decorative corner accents -->
   <div class="cs-corner-accent cs-corner-accent--tr"></div>
-  <div class="cs-corner-accent cs-corner-accent--bl"></div>
+
   <div class:list={["cs-section", { "cs-section--flipped": isRight }]}>
   <!-- Full-bleed image side -->
   <div class="cs-image-side" data-animate={isRight ? "fade-left" : "fade-right"}>
-    {mainImage ? (
-      <Image
-        src={mainImage}
-        alt={imageAlts[0] || title}
-        class="cs-image"
-        loading="lazy"
-        width={960}
-        height={720}
-        format="webp"
-        quality={75}
-        decoding="async"
-      />
-    ) : (
-      <div class="cs-image cs-image--placeholder">
-        <span>Image</span>
-      </div>
-    )}
+    <div class="cs-image-container">
+      {mainImage ? (
+        <img
+          src={mainImage}
+          alt={imageAlts[0] || title}
+          class="cs-image cs-image-main"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="cs-image cs-image-main cs-image--placeholder">
+          <span>Image</span>
+        </div>
+      )}
 
-    <!-- Diagonal slope cutting into image -->
-    <div class="cs-slope">
-      <svg viewBox="0 0 120 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="40,0 120,0 120,800 0,800" fill="var(--background)" />
-        <polygon points="20,0 40,0 0,800 0,570" fill="var(--background)" opacity="0.55" />
-        <polygon points="5,0 20,0 0,570 0,400" fill="var(--background)" opacity="0.25" />
-      </svg>
+      {/* Secondary image bottom-right */}
+      <div class="cs-image-secondary-wrapper" data-parallax>
+        {secondaryImage ? (
+          <img
+            src={secondaryImage}
+            alt={imageAlts[1] || `${title} - detail`}
+            class="cs-image cs-image-secondary"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div class="cs-image cs-image-secondary cs-image--placeholder">
+            <span>Image 2</span>
+          </div>
+        )}
+      </div>
     </div>
   </div>
 
@@ -139,12 +155,42 @@ const isRight = imagePosition === "right";
     overflow: hidden;
   }
 
-  .cs-image {
+  .cs-image-container {
+    position: relative;
     width: 100%;
+    height: 100%;
+    min-height: 400px;
+  }
+
+  .cs-image-main {
+    width: 100%;
+    height: 100%;
     display: block;
     object-fit: cover;
-    aspect-ratio: 4 / 3;
-    min-height: 100%;
+    clip-path: url(#customClip);
+  }
+
+  .cs-image-secondary-wrapper {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: 45%;
+    height: 45%;
+    z-index: 2;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+  }
+
+  .cs-image-secondary {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .cs-section--flipped .cs-image-secondary-wrapper {
+    right: auto;
+    left: 1rem;
   }
 
   .cs-image--placeholder {
@@ -154,44 +200,6 @@ const isRight = imagePosition === "right";
     justify-content: center;
     color: var(--muted-foreground);
     font-size: 0.875rem;
-  }
-
-  /* 3-layer diagonal slope on the inner edge */
-  .cs-slope {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 120px;
-    height: 100%;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .cs-slope svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .cs-section--flipped .cs-slope {
-    right: auto;
-    left: 0;
-    transform: scaleX(-1);
-  }
-
-  /* Vertical highlight strip on the image edge */
-  .cs-accent-strip {
-    position: absolute;
-    top: 15%;
-    right: 85px;
-    width: 3px;
-    height: 35%;
-    background: var(--brand-highlight);
-    z-index: 3;
-    opacity: 0.8;
-  }
-
-  .cs-section--flipped .cs-accent-strip {
-    right: auto;
-    left: 85px;
   }
 
   /* ─── Text side ─── */
@@ -367,13 +375,15 @@ const isRight = imagePosition === "right";
     .cs-section--flipped {
       direction: ltr;
     }
-    .cs-image-side {
-      min-height: 280px;
+    .cs-image-container {
+      min-height: 400px;
+    }
+    .cs-image-secondary-wrapper {
+      width: 40%;
+      bottom: 1rem;
+      right: 1rem;
     }
     .cs-slope {
-      display: none;
-    }
-    .cs-accent-strip {
       display: none;
     }
     .cs-text-side {
@@ -381,3 +391,27 @@ const isRight = imagePosition === "right";
     }
   }
 </style>
+
+<script>
+  function initParallax() {
+    const parallaxElements = document.querySelectorAll<HTMLElement>('[data-parallax]');
+    
+    function handleScroll() {
+      parallaxElements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const scrollProgress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+        
+        if (scrollProgress >= 0 && scrollProgress <= 1) {
+          const translateY = (scrollProgress - 0.5) * 30;
+          el.style.transform = `translateY(${translateY}px)`;
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+  }
+
+  initParallax();
+  document.addEventListener('astro:page-load', initParallax);
+</script>
