@@ -30,12 +30,15 @@ export const siteConfig = {
 
   // Brand Colors (used in CSS variables)
   colors: {
-    primary: "#050315",      // Most dominant - text, headers
-    secondary: "#545454",    // Semi dominant - buttons, highlights, accent
-    tertiary: "#fffbdc",     // Subtle accent - muted backgrounds
-    quaternary: "#fbfbfe",   // Subtle accent - page background
-    accent: "#545454",       // Secondary accent
-    highlight: "#fce300",    // Warm yellow accent - small elements, pops of color
+    primary: "#0A2540",      // Deep navy blue - professional, trustworthy
+    secondary: "#1E88E5",    // Bright blue - HVAC cooling, modern
+    tertiary: "#E3F2FD",     // Light blue - clean, airy
+    quaternary: "#FAFAFA",   // Off-white - clean background
+    accent: "#00897B",       // Teal - balanced temperature
+    highlight: "#FF6F00",    // Warm orange - heating, energy, urgency
+    couponYellow: "#FFD700", // Bright yellow - coupon accent
+    couponCyan: "#00D4D4",   // Cyan - coupon accent
+    couponOrange: "#FF6B35", // Coral orange - coupon accent
   },
 
   // Logo

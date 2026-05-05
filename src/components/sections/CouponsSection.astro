@@ -28,80 +28,96 @@ const title = getLocationText(rawTitle);
 const centerIndex = Math.floor(coupons.length / 2);
 
 const defaultBackgrounds = [
-  'https://johnh967.sg-host.com/wp-content/uploads/2024/12/AC-Repair-Services.webp',
-  'https://johnh967.sg-host.com/wp-content/uploads/sb-instagram-feed-images/466556611_1575760946412367_152571973762791733_nfull.webp',
-  'https://johnh967.sg-host.com/wp-content/uploads/slider/cache/3208844a78ae424ec0bfef8623738be2/HVAC-Repair-Banner.webp'
+  'https://www.calveyheatingandair.com/wp-content/uploads/2021/07/cleaning-air-ducts.png',
+  'https://shiptons.ca/wp-content/uploads/2023/05/Air-Conditioning-Maintenance-Service.webp',
+  'https://allrite.ca/blogs/image/benefits-of-a-yearly-furnace-tune-up.jpg'
 ];
 ---
 
-<section class="cpn-section relative overflow-hidden py-20 md:py-28">
-  <div class="cpn-bg-base"></div>
+<section class="cpn-section relative overflow-hidden py-24 md:py-32">
+  <!-- Modern gradient background -->
+  <div class="absolute inset-0 bg-gradient-to-br from-[#0A2540] via-[#0D2D4F] to-[#132F4C]"></div>
+  
+  <!-- Animated pattern overlay -->
+  <div class="absolute inset-0 opacity-5">
+    <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 48px 48px;"></div>
+  </div>
 
   <div class="relative z-[1] container mx-auto px-6 md:px-12 lg:px-16">
     <!-- Section header -->
-    <div class="mb-14" data-animate="fade-scale">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="h-[3px] w-10 bg-brand-highlight"></div>
-        <span class="text-xs font-bold uppercase tracking-[0.2em] text-brand-highlight">Limited Time</span>
+    <div class="mb-16 text-center" data-animate="fade-scale">
+      <div class="inline-flex items-center gap-3 mb-4 px-6 py-2 bg-brand-highlight/10 backdrop-blur-sm rounded-full border border-brand-highlight/20">
+        <svg class="w-4 h-4 text-brand-highlight" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        <span class="text-xs font-bold uppercase tracking-[0.25em] text-brand-highlight">Limited Time Offers</span>
       </div>
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-brand-primary">{title}</h2>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white mb-3">{title}</h2>
     </div>
 
     <!-- Coupons grid -->
     <div class="cpn-grid" data-animate-stagger>
       {coupons.map((coupon, i) => {
-        const cardBg = coupon.backgroundImage || (i === centerIndex && backgroundImage) || defaultBackgrounds[i % defaultBackgrounds.length];
+        const colors = [
+          { bg: '#FFD700', text: '#1A1A1A' }, // yellow
+          { bg: '#00D4D4', text: '#1A1A1A' }, // cyan
+          { bg: '#FF6B35', text: '#FFFFFF' }  // orange
+        ];
+        const color = colors[i % colors.length];
+        
         return (
-          <div class:list={["cpn-coupon group", { "cpn-coupon--featured": i === centerIndex }]}>
-            <!-- Top: image strip -->
-            <div class="cpn-img-strip">
-              <div class="cpn-img-bg">
-                <Image
-                  src={cardBg}
-                  alt={coupon.label}
-                  class="cpn-img-bg-actual"
-                  width={600}
-                  height={360}
-                  format="webp"
-                  quality={60}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="cpn-img-overlay"></div>
-              <div class="cpn-img-content">
-                <span class="cpn-tag">{coupon.label}</span>
-              </div>
-              <!-- Corner ribbon for featured -->
-              {i === centerIndex && (
-                <div class="cpn-ribbon">
-                  <span>Best Deal</span>
+          <div class="cpn-ticket-wrapper">
+            <div class="cpn-ticket" style={`--ticket-bg: ${color.bg}; --ticket-text: ${color.text};`}>
+              <!-- Left section: main content -->
+              <div class="cpn-ticket-main">
+                <!-- Main content area -->
+                <div class="cpn-ticket-content">
+                  <!-- Vertical "GIFT FOR YOU" text -->
+                  <div class="cpn-ticket-side-text">
+                    <span>GIFT FOR YOU</span>
+                  </div>
+                  
+                  <div>
+                    <div class="cpn-ticket-inner">
+                    <!-- Discount box -->
+                    <div class="cpn-ticket-discount-box">
+                      <span class="cpn-ticket-discount">{coupon.discount}</span>
+                    </div>
+
+                    <!-- Coupon label -->
+                    <div class="cpn-ticket-label">COUPON</div>
+                    
+                  </div>
+                  <p class="">{coupon.description}</p>
+                  </div>
+                  
                 </div>
-              )}
-            </div>
-
-            <!-- Perforated tear line -->
-            <div class="cpn-tear">
-              <div class="cpn-tear-notch cpn-tear-notch--left"></div>
-              <div class="cpn-tear-line"></div>
-              <div class="cpn-tear-notch cpn-tear-notch--right"></div>
-            </div>
-
-            <!-- Bottom: coupon details -->
-            <div class="cpn-details">
-              <div class="cpn-discount-row">
-                <span class="cpn-discount">{coupon.discount}</span>
               </div>
-              <p class="cpn-desc">{coupon.description}</p>
-              <div class="cpn-footer">
-                <div class="cpn-dashed-border"></div>
-                <a href={coupon.buttonHref || "/contact"} class="cpn-btn">
-                  {coupon.buttonText || "GET OFFER"}
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </a>
-              </div>
+              
+              <!-- Right section: barcode stub (clickable) -->
+              <a href={coupon.buttonHref || "/contact"} class="cpn-ticket-stub">
+                <!-- Barcode -->
+                <div class="cpn-ticket-barcode">
+                  <div class="cpn-barcode-lines">
+                    <div class="cpn-barcode-line" style="height: 2px;"></div>
+                    <div class="cpn-barcode-line" style="height: 3px;"></div>
+                    <div class="cpn-barcode-line" style="height: 2px;"></div>
+                    <div class="cpn-barcode-line" style="height: 4px;"></div>
+                    <div class="cpn-barcode-line" style="height: 3px;"></div>
+                    <div class="cpn-barcode-line" style="height: 2px;"></div>
+                    <div class="cpn-barcode-line" style="height: 4px;"></div>
+                    <div class="cpn-barcode-line" style="height: 2px;"></div>
+                    <div class="cpn-barcode-line" style="height: 3px;"></div>
+                    <div class="cpn-barcode-line" style="height: 2px;"></div>
+                    <div class="cpn-barcode-line" style="height: 4px;"></div>
+                    <div class="cpn-barcode-line" style="height: 3px;"></div>
+                    <div class="cpn-barcode-line" style="height: 2px;"></div>
+                    <div class="cpn-barcode-line" style="height: 3px;"></div>
+                    <div class="cpn-barcode-line" style="height: 4px;"></div>
+                  </div>
+                </div>
+                <div class="cpn-ticket-code">{coupon.buttonText || "CLAIM"}</div>
+              </a>
             </div>
           </div>
         );
@@ -111,244 +127,324 @@ const defaultBackgrounds = [
 </section>
 
 <style>
-  /* ─── Section Background ─── */
-  .cpn-bg-base {
-    position: absolute;
-    inset: 0;
-    background: var(--brand-primary);
-  }
-
-  /* Section header override for dark bg */
-  .cpn-section h2 {
-    color: #fff;
-  }
-  .cpn-section .text-brand-primary {
-    color: #fff;
-  }
-
   /* ─── Grid ─── */
   .cpn-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 76rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(2rem, 5vw, 6rem);
+    max-width: 90rem;
     margin: 0 auto;
-    align-items: end;
+    justify-items: center;
   }
 
-  /* Lift the middle card */
-  .cpn-grid > :nth-child(2) {
-    transform: translateY(-1.5rem);
-  }
-  .cpn-grid > :nth-child(2):hover {
-    transform: translateY(calc(-1.5rem - 6px));
-  }
-
-  /* ─── Coupon Card ─── */
-  .cpn-coupon {
+  /* ─── Wrapper to contain ticket + stub ─── */
+  .cpn-ticket-wrapper {
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #fff;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  }
-
-  .cpn-coupon:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-  }
-
-  /* Featured card glow */
-  .cpn-coupon--featured {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25), 0 0 0 2px var(--brand-highlight);
-  }
-  .cpn-coupon--featured:hover {
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 0 0 0 2px var(--brand-highlight), 0 0 30px color-mix(in srgb, var(--brand-highlight) 25%, transparent);
-  }
-
-  /* ─── Image Strip (top half) ─── */
-  .cpn-img-strip {
-    position: relative;
-    height: 180px;
-    overflow: hidden;
-  }
-
-  .cpn-img-bg {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    transition: transform 0.6s ease;
-  }
-  .cpn-img-bg-actual {
+    gap: 1.5rem;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .cpn-coupon:hover .cpn-img-bg {
-    transform: scale(1.08);
+    max-width: min(400px, calc(100vw - 4rem));
   }
 
-  .cpn-img-overlay {
+  /* Scale middle coupon */
+  .cpn-ticket-wrapper:nth-child(2) {
+    transform: scale(1.1);
+    z-index: 2;
+  }
+
+  /* ─── Ticket Container ─── */
+  .cpn-ticket {
+    position: relative;
+    display: flex;
+    transition: transform 0.3s ease;
+    padding-right: clamp(50px, 12vw, 80px);
+    width: 100%;
+  }
+
+  .cpn-ticket-wrapper:hover .cpn-ticket {
+    transform: translateY(-8px);
+  }
+
+  /* ─── Ticket Main Body ─── */
+  .cpn-ticket-main {
+    position: relative;
+    display: flex;
+    background: var(--ticket-bg);
+    height: clamp(260px, 25vw, 340px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Semicircle cutout on left center */
+  .cpn-ticket-main::before {
+    content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      160deg,
-      color-mix(in srgb, var(--brand-primary) 70%, transparent) 0%,
-      color-mix(in srgb, var(--brand-primary) 90%, transparent) 100%
+    left: clamp(-18px, -2.5vw, -25px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(36px, 5vw, 50px);
+    height: clamp(36px, 5vw, 50px);
+    background: linear-gradient(135deg, #0D2D4F 0%, #0A2540 100%);
+    border-radius: 50%;
+  }
+
+  /* Notched edges on right (where stub connects) */
+  .cpn-ticket-stub::after {
+    content: '';
+    position: absolute;
+    right: clamp(-18px, -2.5vw, -25px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(36px, 5vw, 50px);
+    height: clamp(36px, 5vw, 50px);
+    background: linear-gradient(135deg, #0D2D4F 0%, #0A2540 100%);
+    border-radius: 50%;
+  }
+
+  /* ─── Side Text (vertical) ─── */
+  .cpn-ticket-side-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: clamp(0.75rem, 2.5vw, 2rem) clamp(0.4rem, 0.8vw, 0.75rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(180deg);
+    min-width: clamp(45px, 9vw, 65px);
+    flex-shrink: 0;
+  }
+
+  .cpn-ticket-side-text span {
+    font-size: clamp(0.75rem, 1.4vw, 1.3rem);
+    font-weight: 900;
+    letter-spacing: 0.49em;
+    text-transform: uppercase;
+    color: var(--ticket-text);
+    opacity: 0.9;
+    white-space: nowrap;
+  }
+
+  /* ─── Main Content ─── */
+  .cpn-ticket-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.75rem, 2.5vw, 2rem);
+    gap: 0;
+    min-width: 0;
+  }
+
+  .cpn-ticket-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .cpn-ticket-discount-box {
+    background: rgba(0, 0, 0, 0.85);
+    padding: clamp(0.4rem, 1.2vw, 1.5rem) clamp(0.75rem, 2.2vw, 2.5rem);
+    border-radius: clamp(4px, 0.8vw, 8px);
+  }
+
+  .cpn-ticket-discount {
+    font-size: clamp(1.5rem, 3.5vw, 3.2rem);
+    font-weight: 900;
+    color: var(--ticket-bg);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  .cpn-ticket-label {
+    font-size: clamp(1.1rem, 2.3vw, 2.3rem);
+    font-weight: 900;
+    color: var(--ticket-text);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin-top: clamp(0.2rem, 0.6vw, 0.5rem);
+  }
+
+  /* ─── Stub (barcode section - now clickable button) ─── */
+  .cpn-ticket-stub {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: clamp(50px, 12vw, 80px);
+    height: clamp(260px, 25vw, 340px);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.75rem, 2vw, 1.5rem) clamp(0.3rem, 1vw, 0.5rem);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: bottom center;
+    overflow: hidden;
+  }
+
+  /* Hover: rip-off effect (top part lifts + twists) */
+  .cpn-ticket-wrapper:hover .cpn-ticket-stub {
+    transform: perspective(400px) rotateX(-5deg) rotateZ(2deg) translateY(-6px) translateX(3px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 -5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .cpn-ticket-stub:hover {
+    background: rgba(255, 255, 255, 1);
+  }
+
+  /* Perforated line */
+  .cpn-ticket-stub::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2) 0px,
+      rgba(0, 0, 0, 0.2) 8px,
+      transparent 8px,
+      transparent 16px
     );
     z-index: 1;
   }
 
-  .cpn-img-content {
-    position: relative;
-    z-index: 2;
+  .cpn-ticket-barcode {
     display: flex;
-    align-items: flex-end;
+    flex-direction: row;
+    gap: clamp(0.25rem, 0.5vw, 0.5rem);
+    align-items: center;
+    width: 60%;
+    height: auto;
+    max-height: 70%;
+    transform: none;
+    flex: 1;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .cpn-barcode-lines {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2px, 0.4vw, 3px);
+    align-items: stretch;
+    flex: 1;
+  }
+
+  .cpn-barcode-line {
+    width: 60%;
+    background: #1A1A1A;
+  }
+  
+  .cpn-barcode-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2px, 0.4vw, 3px);
+    align-items: flex-start;
+    justify-content: space-between;
     height: 100%;
-    padding: 1.25rem 1.5rem;
   }
-
-  .cpn-tag {
-    display: inline-block;
-    font-size: 0.6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--brand-highlight);
-    border-bottom: 2px solid var(--brand-highlight);
-    padding-bottom: 0.3rem;
-  }
-
-  /* Corner ribbon */
-  .cpn-ribbon {
-    position: absolute;
-    top: 16px;
-    right: -32px;
-    z-index: 5;
-    background: var(--brand-highlight);
-    color: var(--brand-primary);
-    font-size: 0.55rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 0.3rem 2.5rem;
-    transform: rotate(45deg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  /* ─── Perforated Tear Line ─── */
-  .cpn-tear {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 0;
-    z-index: 3;
-  }
-
-  .cpn-tear-notch {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--brand-primary);
-    flex-shrink: 0;
-    position: relative;
-  }
-  .cpn-tear-notch--left {
-    margin-left: -8px;
-  }
-  .cpn-tear-notch--right {
-    margin-right: -8px;
-  }
-
-  .cpn-tear-line {
-    flex: 1;
-    border-top: 2px dashed color-mix(in srgb, var(--brand-primary) 15%, transparent);
-  }
-
-  /* ─── Details (bottom half) ─── */
-  .cpn-details {
-    padding: 1.5rem 1.5rem 1.75rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  .cpn-discount-row {
-    margin-bottom: 0.5rem;
-  }
-
-  .cpn-discount {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 800;
-    font-size: 2.75rem;
-    line-height: 1;
-    color: var(--brand-primary);
-    text-transform: uppercase;
-  }
-
-  .cpn-desc {
-    font-size: 0.85rem;
-    line-height: 1.5;
+  
+  .cpn-barcode-numbers span {
+    font-size: clamp(0.4rem, 0.8vw, 0.6rem);
+    font-family: 'Courier New', monospace;
     color: #666;
-    margin-bottom: auto;
-    padding-bottom: 1.25rem;
+    line-height: 1;
   }
 
-  .cpn-footer {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .cpn-dashed-border {
-    border-top: 2px dashed color-mix(in srgb, var(--brand-primary) 12%, transparent);
-    padding-top: 1rem;
-  }
-
-  .cpn-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--brand-highlight);
+  .cpn-ticket-code {
+    position: absolute;
+    bottom: clamp(0.5rem, 1.5vw, 1rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.5rem, 1vw, 0.7rem);
+    font-family: system-ui, sans-serif;
+    font-weight: 700;
     color: var(--brand-primary);
-    padding: 0.75rem 1.75rem;
-    font-weight: 800;
-    font-size: 0.75rem;
-    text-decoration: none;
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    transition: all 0.3s ease;
-    align-self: flex-start;
+    white-space: nowrap;
   }
-  .cpn-btn:hover {
-    filter: brightness(1.08);
-    transform: translateX(4px);
-  }
+
+  /* ─── Details Below Ticket ─── */
+  /* Removed - description now inside ticket */
 
   /* ─── Responsive ─── */
   @media (max-width: 1024px) {
     .cpn-grid {
       grid-template-columns: repeat(2, 1fr);
+      gap: 4rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cpn-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    
+    .cpn-ticket-wrapper {
+      max-width: 100%;
+    }
+    
+    .cpn-ticket {
+      padding-right: 70px;
+    }
+    
+    .cpn-ticket-main {
+      height: 200px;
+    }
+    
+    .cpn-ticket-stub {
+      width: 70px;
+      height: 200px;
+    }
+    
+    .cpn-ticket-discount {
+      font-size: 2.5rem;
+    }
+    
+    .cpn-ticket-label {
+      font-size: 2rem;
+    }
+    
+    .cpn-ticket-side-text span {
+      font-size: 1rem;
     }
   }
 
   @media (max-width: 640px) {
-    .cpn-grid {
-      grid-template-columns: 1fr;
+    .cpn-ticket {
+      padding-right: 60px;
     }
-    .cpn-grid > :nth-child(2) {
-      transform: none;
+    
+    .cpn-ticket-main {
+      height: 180px;
     }
-    .cpn-grid > :nth-child(2):hover {
-      transform: translateY(-6px);
+    
+    .cpn-ticket-stub {
+      width: 60px;
+      height: 180px;
     }
-    .cpn-img-strip {
-      height: 150px;
+    
+    .cpn-ticket-discount {
+      font-size: 2rem;
     }
-    .cpn-discount {
-      font-size: 2.25rem;
+    
+    .cpn-ticket-label {
+      font-size: 1.5rem;
     }
   }
 </style>

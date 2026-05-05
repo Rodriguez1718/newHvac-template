@@ -30,11 +30,15 @@ const title = getLocationText(rawTitle);
 const description = getLocationText(rawDescription);
 const features = rawFeatures.map(getLocationText);
 
-const mainImage = images[0] || "";
+const DEFAULT_IMAGE = "https://www.missionviejoair.com/wp-content/uploads/2024/06/How-to-Pick-the-Best-HVAC-Repair-Contractor.jpg";
+const mainImage = DEFAULT_IMAGE;
 const isRight = imagePosition === "right";
 ---
 
 <section class="cs-wrapper">
+  <!-- Decorative corner accents -->
+  <div class="cs-corner-accent cs-corner-accent--tr"></div>
+  <div class="cs-corner-accent cs-corner-accent--bl"></div>
   <div class:list={["cs-section", { "cs-section--flipped": isRight }]}>
   <!-- Full-bleed image side -->
   <div class="cs-image-side" data-animate={isRight ? "fade-left" : "fade-right"}>
@@ -64,13 +68,11 @@ const isRight = imagePosition === "right";
         <polygon points="5,0 20,0 0,570 0,400" fill="var(--background)" opacity="0.25" />
       </svg>
     </div>
-
-    <!-- Highlight accent strip -->
-    <div class="cs-accent-strip"></div>
   </div>
 
   <!-- Text side -->
   <div class="cs-text-side" data-animate={isRight ? "fade-right" : "fade-left"} data-animate-delay="200">
+    
     <div class="cs-text-inner">
       {badge && (
         <div class="cs-eyebrow">
@@ -112,6 +114,7 @@ const isRight = imagePosition === "right";
   .cs-wrapper {
     background: var(--background);
     overflow: hidden;
+    position: relative;
   }
 
   /* ─── Layout ─── */
@@ -193,10 +196,41 @@ const isRight = imagePosition === "right";
 
   /* ─── Text side ─── */
   .cs-text-side {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 2.5rem 2rem 2.5rem 2.5rem;
   }
+
+  /* ─── Corner Decorative Accents ─── */
+.cs-corner-accent {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Top-right: orange, rotated into the corner */
+.cs-corner-accent--tr {
+  top: -29px;
+  right: -18px;
+  width: 480px;
+  height: 90px;
+  background: var(--chart-4);
+  transform: rotate(8deg);
+  transform-origin: top right;
+}
+
+/* Bottom-left: brand primary (dark navy), rotated into the corner */
+.cs-corner-accent--bl {
+  bottom: -18px;
+  left: -18px;
+  width: 360px;
+  height: 70px;
+  background: var(--chart-3);
+  transform: rotate(8deg);
+  transform-origin: bottom left;
+}
+  
 
   @media (min-width: 1024px) {
     .cs-text-side {

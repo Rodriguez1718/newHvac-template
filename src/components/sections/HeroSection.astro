@@ -9,16 +9,13 @@ const defaultHeroImages = [
   "https://images.pexels.com/photos/34069/pexels-photo.jpg?auto=compress&w=1920",
 ];
 
-// Check if a URL is a remote image we can optimize via Astro
 const isRemoteImage = (url: string) => url.startsWith('http://') || url.startsWith('https://');
 
 interface Props {
   variant?: "slider" | "subpage";
   buttonHref?: string;
   showArrow?: boolean;
-  // Slider-specific props
   images?: string[];
-  // Subpage-specific props
   badge?: string;
   title?: string;
   subtitle?: string;
@@ -79,7 +76,8 @@ const isSlider = variant === "slider";
 
 {isSlider ? (
 <section class="hero-section relative w-full overflow-hidden">
-  <!-- Background images -->
+
+  <!-- Full background images (behind everything) -->
   {slides.map((slide, i) => (
     <div class={`hero-bg absolute inset-0 transition-opacity duration-700 ${i === 0 ? 'opacity-100' : 'opacity-0'}`} data-bg={i}>
       {isRemoteImage(slide.bgImage) ? (
@@ -112,128 +110,165 @@ const isSlider = variant === "slider";
     </div>
   ))}
 
-  <!-- Accent bar at top -->
+  <!-- Accent bar -->
   <div class="absolute top-0 left-0 w-full h-1 bg-brand-highlight z-[5]"></div>
 
-  <!-- Left white slope (untouched) -->
-  <div class="hero-slope-left absolute inset-0 z-[1]">
+  <!--
+    SLOPE LAYERS
+    ─────────────────────────────────────────────────────────────
+    The root problem with the original code: SVG <pattern> +
+    polygon opacity renders inconsistently across browsers.
+    The pattern image draws at full opacity; the polygon opacity
+    only tints the geometry, NOT the image fill inside it.
+
+    Fix: replace SVG patterns with CSS clip-path divs.
+    Each slope is a full-size absolutely-positioned div whose
+    <img> is clipped to the desired polygon using clip-path.
+    Opacity is applied to the wrapper div — this correctly
+    composites the image at the intended transparency.
+
+    Polygon % values derived from original SVG (viewBox 0 0 1440 800):
+      White solid : 0,0  →  480,0  →  820,800  →  0,800
+                    0%      33.3%     56.9%        0%
+
+      Slope A (100%):  480,0 → 600,0 → 940,800 → 820,800
+                       33.3%   41.7%   65.3%      56.9%
+
+      Slope B (55%):   580,0 → 700,0 → 1040,800 → 920,800
+                       40.3%   48.6%   72.2%       63.9%
+
+      Slope C (25%):   680,0 → 1440,0 → 1440,800 → 1020,800
+                       47.2%   100%      100%        70.8%
+    ─────────────────────────────────────────────────────────────
+  -->
+
+  <!-- Static solid white polygon with blur edge -->
+  <div class="slope-white absolute inset-0 z-[1] pointer-events-none">
     <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="0,0 480,0 820,800 0,800" fill="white" />
+      <defs>
+        <linearGradient id="edge-fade" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:white;stop-opacity:1" />
+          <stop offset="60%" style="stop-color:white;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:white;stop-opacity:0" />
+        </linearGradient>
+      </defs>
+      <polygon points="0,0 480,0 820,800 0,800" fill="url(#edge-fade)" />
     </svg>
   </div>
 
-  <!-- Image slopes (visible from start, slide right on carousel change) -->
-  <div class="hero-image-slopes absolute inset-0 z-[1] pointer-events-none">
+  <!-- Per-slide image slope sets -->
+  <div class="absolute inset-0 z-[2] pointer-events-none">
     {slides.map((slide, i) => (
-      <div class={`slope-set ${i === 0 ? 'active' : ''}`} data-slope-set={i}>
-        <!-- Slope 1 -->
-        <div class="slope-clip slope-1">
-          <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <clipPath id={`clip-slope-1-${i}`}>
-                <polygon points="480,0 600,0 940,800 820,800" />
-              </clipPath>
-            </defs>
-            <image 
-              href={slide.bgImage} 
-              width="1440" 
-              height="800" 
-              preserveAspectRatio="xMidYMid slice"
-              clip-path={`url(#clip-slope-1-${i})`}
-            />
-          </svg>
+      <div class={`slope-set absolute inset-0 ${i === 0 ? 'active' : ''}`} data-slope-set={i}>
+
+        <!-- Slope A: full opacity -->
+        <div class="slope-wrap slope-a">
+          <img
+            src={slide.bgImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding="async"
+            width="1440"
+            height="810"
+          />
         </div>
 
-        <!-- Slope 2 -->
-        <div class="slope-clip slope-2">
-          <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <clipPath id={`clip-slope-2-${i}`}>
-                <polygon points="600,0 700,0 1040,800 940,800" />
-              </clipPath>
-            </defs>
-            <image 
-              href={slide.bgImage} 
-              width="1440" 
-              height="800" 
-              preserveAspectRatio="xMidYMid slice"
-              clip-path={`url(#clip-slope-2-${i})`}
-            />
-          </svg>
+        <!-- Slope B: 55% opacity -->
+        <div class="slope-wrap slope-b">
+          <img
+            src={slide.bgImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding="async"
+            width="1440"
+            height="810"
+          />
         </div>
 
-        <!-- Slope 3 -->
-        <div class="slope-clip slope-3">
-          <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <clipPath id={`clip-slope-3-${i}`}>
-                <polygon points="700,0 1440,0 1440,800 1040,800" />
-              </clipPath>
-            </defs>
-            <image 
-              href={slide.bgImage} 
-              width="1440" 
-              height="800" 
-              preserveAspectRatio="xMidYMid slice"
-              clip-path={`url(#clip-slope-3-${i})`}
-            />
-          </svg>
+        <!-- Slope C: 25% opacity -->
+        <div class="slope-wrap slope-c">
+          <img
+            src={slide.bgImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding="async"
+            width="1440"
+            height="810"
+          />
         </div>
+
       </div>
     ))}
   </div>
 
   <!-- Content — pinned bottom-left -->
-  <div class="relative z-[2] container mx-auto px-6 md:px-12 lg:px-16 flex items-end min-h-[85vh]">
-    <div class="hero-content max-w-xl pb-14 md:pb-16 lg:pb-20">
+  <div class="relative z-[3] container mx-auto px-6 md:px-12 lg:px-16 flex items-end min-h-[85vh]">
+    <div class="hero-content max-w-2xl pb-16 md:pb-20 lg:pb-24">
 
-      <!-- Slides -->
       <div class="slides-container relative">
         {slides.map((slide, i) => (
-          <div
-            class={`hero-slide ${i === 0 ? 'active' : ''}`}
-            data-slide={i}
-          >
-            <!-- Eyebrow with background -->
-            <div class="mb-5">
-              <span class="hero-eyebrow text-xs md:text-sm font-bold tracking-[0.15em] uppercase text-brand-highlight inline-block px-4 py-2 bg-brand-primary border-l-[3px] border-brand-highlight">
-                {slide.statLabel} — {slide.statNumber}
-              </span>
+          <div class={`hero-slide ${i === 0 ? 'active' : ''}`} data-slide={i}>
+            <!-- Eyebrow badge with modern styling -->
+            <div class="mb-6">
+              <div class="border-l-4 border-l-[#FF6F00] inline-flex items-center gap-3 px-5 py-3 bg-[#0A2540]/95 backdrop-blur-sm shadow-xl border border-[#1E3A5F]">
+                <span class="flex items-center justify-center">
+                  <span class="text-[#FF6F00] font-black text-lg">{slide.statNumber}</span>
+                </span>
+                <span class="text-xs font-bold tracking-[0.12em] uppercase text-white">
+                  {slide.statLabel}
+                </span>
+              </div>
             </div>
 
-            <!-- Title -->
-            <h1 class="hero-title text-[2.2rem] md:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.05] mb-5 uppercase tracking-tight">
+            <!-- Title with enhanced typography -->
+            <h1 class="hero-title text-[2.5rem] md:text-6xl lg:text-7xl font-black leading-[0.95] mb-6 uppercase tracking-[-0.02em]">
               {getLocationText(slide.title)}
             </h1>
 
-            <!-- Subtitle (small, muted, below title) -->
-            <p class="hero-subtitle text-xs md:text-sm leading-relaxed max-w-sm">
+            <!-- Subtitle with better spacing -->
+            <p class="hero-subtitle text-base md:text-lg leading-relaxed max-w-lg mb-8 font-medium">
               {slide.subtitle}
             </p>
+
+            <!-- CTA button -->
+            <button class="hero-cta group inline-flex items-center gap-3 px-5 py-3 bg-brand-highlight text-brand-primary font-bold text-lg rounded-lg shadow-2xl hover:shadow-[0_20px_60px_rgba(255,111,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 cursor-pointer border-2 border-transparent ">
+              {slide.buttonText}
+              <svg class="w-6 h-6 transition-transform duration-300 group-hover:translate-x-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
           </div>
         ))}
       </div>
 
-      <!-- Dots below content -->
-      <div class="flex items-center gap-3 mt-8">
-        {slides.map((_, i) => (
-          <button
-            class={`hero-dot transition-all duration-300 ${i === 0 ? 'active' : ''}`}
-            data-index={i}
-            aria-label={`Slide ${i + 1}`}
-          />
-        ))}
-        <div class="progress-track ml-3 w-16 h-0.5 bg-gray-300 rounded-full overflow-hidden">
-          <div class="progress-fill h-full rounded-full"></div>
+      <!-- Dots with modern design -->
+      <div class="flex items-center gap-4 mt-12">
+        <div class="flex items-center gap-2">
+          {slides.map((_, i) => (
+            <button
+              class={`hero-dot transition-all duration-300 ${i === 0 ? 'active' : ''}`}
+              data-index={i}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
+        </div>
+        <div class="progress-track flex-1 max-w-24 h-1 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm">
+          <div class="progress-fill h-full rounded-full bg-brand-highlight"></div>
         </div>
       </div>
     </div>
   </div>
+
 </section>
 ) : (
-<!-- SUBPAGE VARIANT -->
+<!-- SUBPAGE VARIANT — unchanged -->
 <section class="hero-section relative w-full overflow-hidden">
-  <!-- Background image -->
   <div class="absolute inset-0">
     {subpageImage && isRemoteImage(subpageImage) ? (
       <Image
@@ -273,7 +308,6 @@ const isSlider = variant === "slider";
     )}
   </div>
 
-  <!-- 3-layer diagonal white slope -->
   <div class="hero-slope absolute inset-0 z-[1]">
     <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <polygon points="0,0 580,0 920,800 0,800" fill="white" />
@@ -282,13 +316,10 @@ const isSlider = variant === "slider";
     </svg>
   </div>
 
-  <!-- Accent bar at top -->
   <div class="absolute top-0 left-0 w-full h-1 bg-brand-highlight z-[5]"></div>
 
-  <!-- Content — pinned bottom-left -->
   <div class="relative z-[2] container mx-auto px-6 md:px-12 lg:px-16 flex items-end min-h-[85vh]">
     <div class="hero-content max-w-xl pb-14 md:pb-16 lg:pb-20">
-
       {badge && (
         <div class="mb-5">
           <span class="hero-eyebrow text-[11px] md:text-xs font-semibold tracking-[0.18em] uppercase text-brand-highlight inline-block pb-2 border-b-2 border-brand-highlight">
@@ -296,17 +327,14 @@ const isSlider = variant === "slider";
           </span>
         </div>
       )}
-
       <h1 class="hero-title text-[2.2rem] md:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.05] mb-5 uppercase tracking-tight">
         {subpageTitle && getLocationText(subpageTitle)}
       </h1>
-
       {subpageSubtitle && (
         <p class="hero-subtitle text-xs md:text-sm leading-relaxed max-w-sm">
           {getLocationText(subpageSubtitle)}
         </p>
       )}
-
       {trustIndicators && trustIndicators.length > 0 && (
         <div class="flex flex-wrap gap-4 mt-6">
           {trustIndicators.map((indicator) => (
@@ -330,89 +358,109 @@ const isSlider = variant === "slider";
     background: #f5f5f5;
   }
 
-  /* Left white slope (static) */
-  .hero-slope-left {
-    pointer-events: none;
-  }
-
-  /* Image slopes container */
-  .hero-image-slopes {
-    pointer-events: none;
-  }
-
-  /* Slope set - each carousel slide has its own set */
-  .slope-set {
+  /* ── Slope image wrapper ───────────────────────────────────────
+     Each .slope-wrap is absolutely positioned over the full hero.
+     CSS clip-path cuts it to the desired diagonal strip.
+     Opacity on the wrapper composites the image correctly —
+     unlike SVG polygon fill opacity which only tints the geometry.
+  ─────────────────────────────────────────────────────────────── */
+  .slope-wrap {
     position: absolute;
     inset: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease;
+    overflow: hidden;
   }
 
+  .slope-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Slope A — right of white, full opacity */
+  .slope-a {
+    clip-path: polygon(33.3% 0%, 41.7% 0%, 65.3% 100%, 56.9% 100%);
+    opacity: 1;
+  }
+
+  /* Slope B — 55% opacity blending strip */
+  .slope-b {
+    clip-path: polygon(40.3% 0%, 48.6% 0%, 72.2% 100%, 63.9% 100%);
+    opacity: 0.55;
+  }
+
+  /* Slope C — 25% opacity, fills remainder to right edge */
+  .slope-c {
+    clip-path: polygon(47.2% 0%, 100% 0%, 100% 100%, 70.8% 100%);
+    opacity: 0.25;
+  }
+
+  /* Slope set visibility */
+  .slope-set {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    pointer-events: none;
+  }
   .slope-set.active {
     opacity: 1;
   }
 
-  /* Individual slope clips - visible from start, slide right on activation */
-  .slope-clip {
-    position: absolute;
-    inset: 0;
-    transform: translateX(0);
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Slide-in animation per slope strip (staggered) */
+  .slope-set.active .slope-a {
+    animation: slopeEnterA 0.75s cubic-bezier(0.16, 1, 0.3, 1) both 0.05s;
+  }
+  .slope-set.active .slope-b {
+    animation: slopeEnterB 0.75s cubic-bezier(0.16, 1, 0.3, 1) both 0.18s;
+  }
+  .slope-set.active .slope-c {
+    animation: slopeEnterC 0.75s cubic-bezier(0.16, 1, 0.3, 1) both 0.30s;
   }
 
-  /* When slope-set becomes active, trigger slide animation */
-  .slope-set.active .slope-1 {
-    animation: slideToRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.1s;
+  @keyframes slopeEnterA {
+    from { transform: translateX(50px); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+  }
+  @keyframes slopeEnterB {
+    from { transform: translateX(50px); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 0.55; }
+  }
+  @keyframes slopeEnterC {
+    from { transform: translateX(50px); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 0.25; }
   }
 
-  .slope-set.active .slope-2 {
-    animation: slideToRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.3s;
+  /* ── Text slides ── */
+  .hero-title { 
+    color: #0A2540;
+    line-height: 0.95;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.3);
   }
-
-  .slope-set.active .slope-3 {
-    animation: slideToRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.5s;
-  }
-
-  @keyframes slideToRight {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(200px);
-    }
-  }
-
-  /* Title & subtitle sit on white slope — dark text */
-  .hero-title {
+  .hero-subtitle { 
     color: #1a1a1a;
-    line-height: 1.05;
-  }
-
-  .hero-subtitle {
-    color: #555;
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.5);
   }
 
   /* CTA button */
   .hero-cta {
-    background: var(--brand-highlight);
-    color: #1a1a1a;
     position: relative;
     overflow: hidden;
   }
-
-  .hero-cta:hover {
-    filter: brightness(1.08);
-    transform: translateX(4px);
+  .hero-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+  .hero-cta:hover::before {
+    transform: translateX(100%);
   }
 
-  /* Slides */
-  .slides-container {
-    position: relative;
-  }
+  .slides-container { position: relative; }
 
   .hero-slide {
     position: absolute;
@@ -422,7 +470,6 @@ const isSlider = variant === "slider";
     transition: opacity 0.6s ease, transform 0.6s ease;
     pointer-events: none;
   }
-
   .hero-slide.active {
     position: relative;
     opacity: 1;
@@ -430,82 +477,60 @@ const isSlider = variant === "slider";
     pointer-events: auto;
   }
 
-  /* Navigation dots — on white area, so dark dots */
+  /* ── Dots ── */
   .hero-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px; 
+    height: 12px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255,255,255,0.4);
+    border: 2px solid rgba(255,255,255,0.6);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(4px);
   }
-
-  .hero-dot:hover {
-    background: rgba(0, 0, 0, 0.3);
+  .hero-dot:hover  { 
+    background: rgba(255,255,255,0.7);
+    transform: scale(1.2);
   }
-
   .hero-dot.active {
     background: var(--brand-highlight);
     border-color: var(--brand-highlight);
-    box-shadow: 0 0 6px color-mix(in srgb, var(--brand-highlight) 40%, transparent);
+    width: 32px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px color-mix(in srgb, var(--brand-highlight) 60%, transparent);
   }
 
-  /* Progress bar */
+  /* ── Progress ── */
   .progress-fill {
     background: var(--brand-highlight);
     width: 0%;
     transition: width linear;
   }
 
-  /* Entrance animation */
+  /* ── Entrance ── */
   .hero-content {
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Scroll indicator bounce */
-  .scroll-hint {
-    animation: subtleBounce 2s ease-in-out infinite;
-  }
-
-  @keyframes subtleBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-
+  /* ── Mobile ── */
   @media (max-width: 768px) {
-    .hero-section {
-      min-height: 70vh;
-    }
-
-    /* On mobile, make slope cover more so text is always on white */
-    .hero-slope svg polygon:first-child {
-      points: 0,0 1440,0 1200,800 0,800;
-    }
+    .hero-section { min-height: 70vh; }
+    .slope-a { clip-path: polygon(28% 0%, 38% 0%, 62% 100%, 52% 100%); }
+    .slope-b { clip-path: polygon(36% 0%, 46% 0%, 70% 100%, 60% 100%); }
+    .slope-c { clip-path: polygon(44% 0%, 100% 0%, 100% 100%, 68% 100%); }
   }
 
+  /* ── Reduced motion ── */
   @media (prefers-reduced-motion: reduce) {
-    .hero-content {
-      animation: none;
-    }
-    .scroll-hint {
-      animation: none;
-    }
-    .hero-slide {
-      transition: opacity 0.3s ease;
-      transform: none !important;
-    }
+    .hero-content { animation: none; }
+    .hero-slide   { transition: opacity 0.3s ease; transform: none !important; }
+    .slope-set.active .slope-a,
+    .slope-set.active .slope-b,
+    .slope-set.active .slope-c { animation: none; }
   }
 </style>
 
@@ -514,15 +539,14 @@ const isSlider = variant === "slider";
   var heroTimer;
 
   function initHeroSlider() {
-    if (heroTimer) {
-      clearInterval(heroTimer);
-      heroTimer = undefined;
-    }
+    if (heroTimer) { clearInterval(heroTimer); heroTimer = undefined; }
 
-    var slides = document.querySelectorAll('.hero-slide');
-    var dots = document.querySelectorAll('.hero-dot');
-    var bgs = document.querySelectorAll('.hero-bg');
-    var fill = document.querySelector('.progress-fill');
+    var slides    = document.querySelectorAll('.hero-slide');
+    var dots      = document.querySelectorAll('.hero-dot');
+    var bgs       = document.querySelectorAll('.hero-bg');
+    var slopeSets = document.querySelectorAll('[data-slope-set]');
+    var fill      = document.querySelector('.progress-fill');
+
     if (!slides.length || !dots.length) return;
 
     var current = 0;
@@ -533,9 +557,6 @@ const isSlider = variant === "slider";
       slides[current].style.width = '100%';
       dots[current].classList.remove('active');
       if (bgs[current]) bgs[current].classList.replace('opacity-100', 'opacity-0');
-
-      // Hide current slope set
-      var slopeSets = document.querySelectorAll('[data-slope-set]');
       if (slopeSets[current]) slopeSets[current].classList.remove('active');
 
       current = index;
@@ -546,16 +567,11 @@ const isSlider = variant === "slider";
       dots[current].classList.add('active');
       if (bgs[current]) bgs[current].classList.replace('opacity-0', 'opacity-100');
 
-      // Show new slope set + retrigger animation
+      // Retrigger slope entrance animation via reflow
       if (slopeSets[current]) {
+        slopeSets[current].classList.remove('active');
+        void slopeSets[current].offsetWidth; // force reflow
         slopeSets[current].classList.add('active');
-        // Reset animation
-        var slopeClips = slopeSets[current].querySelectorAll('.slope-clip');
-        slopeClips.forEach(function(clip) {
-          clip.style.animation = 'none';
-          clip.offsetHeight; // Force reflow
-          clip.style.animation = '';
-        });
       }
 
       startProgress();
@@ -565,18 +581,21 @@ const isSlider = variant === "slider";
       if (fill) {
         fill.style.transition = 'none';
         fill.style.width = '0%';
-        requestAnimationFrame(function() {
-          requestAnimationFrame(function() {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
             fill.style.transition = 'width ' + HERO_INTERVAL + 'ms linear';
             fill.style.width = '100%';
           });
         });
       }
       if (heroTimer) clearInterval(heroTimer);
-      heroTimer = setInterval(function() { goTo((current + 1) % slides.length); }, HERO_INTERVAL);
+      heroTimer = setInterval(function () { goTo((current + 1) % slides.length); }, HERO_INTERVAL);
     }
 
-    dots.forEach(function(dot, i) { dot.addEventListener('click', function() { goTo(i); }); });
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () { goTo(i); });
+    });
+
     startProgress();
   }
 

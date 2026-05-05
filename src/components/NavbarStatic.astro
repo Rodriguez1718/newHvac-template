@@ -177,6 +177,9 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
 </div>
 
 <style>
+  /* ── Modern Professional Navbar Styles ── */
+  /* Uses global.css design system variables */
+  
   /* ── Toggle input (hidden, drives CSS state) ── */
   .nb-mobile-toggle-input {
     position: fixed;
@@ -189,21 +192,24 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
   .nb-header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 50;
     width: 100%;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 3px rgba(10, 37, 64, 0.08);
   }
 
   /* ── Top bar (desktop only) ── */
   .nb-top {
     display: none;
     background: var(--brand-primary);
-    border-bottom: 3px solid var(--brand-highlight);
+    border-bottom: 1px solid color-mix(in srgb, var(--brand-highlight) 30%, transparent);
   }
   @media (min-width: 1024px) { .nb-top { display: block; } }
 
   .nb-top-inner {
     display: flex;
-    height: 68px;
+    height: 64px;
     align-items: center;
     justify-content: space-between;
   }
@@ -213,18 +219,28 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     gap: 0.875rem;
     flex-shrink: 0;
     text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .nb-logo:hover {
+    transform: translateY(-1px);
   }
   .nb-logo-img {
-    height: 44px; width: 44px;
+    height: 40px; width: 40px;
     object-fit: contain;
     filter: brightness(0) invert(1);
+    transition: filter 0.2s ease;
   }
   .nb-logo-name {
-    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     color: #fff;
+    transition: color 0.2s ease;
+  }
+  .nb-logo:hover .nb-logo-name {
+    color: var(--brand-highlight);
   }
   .nb-utility {
     display: flex;
@@ -232,68 +248,109 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     gap: 2rem;
   }
   .nb-util-link {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.7);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: rgba(255,255,255,0.8);
     text-decoration: none;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    transition: color 0.2s;
+    gap: 0.375rem;
+    transition: color 0.2s ease;
+    cursor: pointer;
+    position: relative;
   }
-  .nb-util-link:hover { color: var(--brand-highlight); }
-  .nb-chevron { width: 0.625rem; height: 0.625rem; flex-shrink: 0; }
+  .nb-util-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--brand-highlight);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+  }
+  .nb-util-link:hover {
+    color: #fff;
+  }
+  .nb-util-link:hover::after {
+    transform: scaleX(1);
+  }
+  .nb-chevron {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .nb-util-dropdown:hover .nb-chevron {
+    transform: rotate(180deg);
+  }
   .nb-util-dropdown { position: relative; }
   .nb-util-panel {
     display: none;
     position: absolute;
-    top: calc(100% + 0.75rem);
     right: 0;
-    background: var(--brand-primary);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    padding: 0.5rem 0;
+    background: #fff;
+    box-shadow: 0 10px 40px color-mix(in srgb, var(--brand-primary) 30%, transparent), 0 0 0 1px color-mix(in srgb, var(--brand-primary) 10%, transparent);
+    border-radius: 8px;
+    padding: 0.5rem;
     min-width: 220px;
-    z-index: 95;
+    z-index: 40;
+    animation: slideDown 0.2s ease;
+  }
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   .nb-util-panel-bar {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
     background: var(--brand-highlight);
+    border-radius: 8px 8px 0 0;
   }
   .nb-util-dropdown:hover .nb-util-panel { display: block; }
   .nb-util-child {
     display: block;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.6);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--brand-primary);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s, background 0.2s;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
-  .nb-util-child:hover { color: var(--brand-highlight); background: rgba(255,255,255,0.05); }
+  .nb-util-child:hover {
+    color: var(--brand-secondary);
+    background: var(--brand-tertiary);
+  }
 
   /* ── Service bar ── */
   .nb-bar {
-    background: var(--brand-tertiary);
-    border-bottom: 1px solid color-mix(in srgb, var(--brand-highlight) 20%, transparent);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid color-mix(in srgb, var(--brand-secondary) 15%, var(--brand-tertiary));
   }
   .nb-bar-inner {
     display: flex;
-    height: 58px;
+    height: 72px;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
   /* Desktop service nav — hidden on mobile */
   .nb-service-nav {
     display: none;
-    height: 58px;
+    height: 72px;
+    gap: 0.25rem;
   }
   @media (min-width: 1024px) { .nb-service-nav { display: flex; } }
 
@@ -306,89 +363,129 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
   .nb-nav-link {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
-    padding: 0 0.75rem;
+    gap: 0.5rem;
+    padding: 0 1.25rem;
     height: 100%;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--brand-secondary);
+    color: var(--brand-primary);
     text-decoration: none;
     white-space: nowrap;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
+    cursor: pointer;
+    position: relative;
   }
-  .nb-nav-link:hover, .nb-nav-item:hover .nb-nav-link { color: var(--brand-primary); }
+  .nb-nav-link:hover,
+  .nb-nav-item:hover .nb-nav-link {
+    color: var(--brand-secondary);
+  }
   .nb-nav-underline {
     position: absolute;
-    bottom: 0; left: 0.75rem; right: 0.75rem;
+    bottom: 0;
+    left: 1.25rem;
+    right: 1.25rem;
     height: 3px;
     background: var(--brand-highlight);
     transform: scaleX(0);
-    transition: transform 0.2s;
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 3px 3px 0 0;
   }
-  .nb-nav-item:hover .nb-nav-underline { transform: scaleX(1); }
+  .nb-nav-item:hover .nb-nav-underline {
+    transform: scaleX(1);
+  }
 
   /* Mega menu — CSS hover, no JS */
   .nb-mega {
     display: none;
     position: fixed;
-    left: 0; right: 0;
-    top: 126px;
-    z-index: 90;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    left: 0;
+    right: 0;
+    top: 72px;
+    z-index: 40;
+    box-shadow: 0 20px 60px color-mix(in srgb, var(--brand-primary) 20%, transparent);
+    animation: slideDown 0.25s ease;
   }
+
   .nb-nav-item:hover .nb-mega { display: block; }
-  .nb-mega-bar { height: 3px; background: var(--brand-highlight); }
-  .nb-mega-inner { background: #fff; padding: 2rem 2.5rem; }
+  .nb-mega-bar {
+    height: 3px;
+    background: var(--brand-highlight);
+  }
+  .nb-mega-inner {
+    background: #fff;
+    padding: 0.75rem 3rem 1.25rem;
+  }
   .nb-mega-links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.25rem 2rem;
-    margin-bottom: 1.5rem;
+    gap: 0 2.5rem;
+    margin-bottom: 0.75rem;
   }
   .nb-mega-link {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.5rem 0;
+    padding: 0.375rem 1rem;
     font-size: 0.875rem;
-    color: var(--brand-secondary);
+    color: var(--brand-primary);
     text-decoration: none;
-    transition: color 0.2s;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
-  .nb-mega-link:hover { color: var(--brand-primary); }
+  .nb-mega-link:hover {
+    color: var(--brand-secondary);
+    background: var(--brand-tertiary);
+    transform: translateX(4px);
+  }
   .nb-mega-dot {
-    width: 6px; height: 6px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--brand-secondary) 30%, transparent);
+    background: color-mix(in srgb, var(--brand-secondary) 30%, var(--brand-tertiary));
     flex-shrink: 0;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
   }
-  .nb-mega-link:hover .nb-mega-dot { background: var(--brand-highlight); }
+  .nb-mega-link:hover .nb-mega-dot {
+    background: var(--brand-secondary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-secondary) 15%, transparent);
+  }
   .nb-mega-footer {
-    padding-top: 1rem;
-    border-top: 1px solid color-mix(in srgb, var(--brand-highlight) 15%, transparent);
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--brand-secondary) 15%, var(--brand-tertiary));
   }
   .nb-mega-view-all {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 700;
+    gap: 0.625rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--brand-secondary);
     text-decoration: none;
-    transition: color 0.2s;
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
-  .nb-mega-view-all:hover { color: var(--brand-highlight); }
+  .nb-mega-view-all:hover {
+    background: var(--brand-tertiary);
+    color: var(--brand-primary);
+  }
+  .nb-mega-view-all svg {
+    transition: transform 0.2s ease;
+  }
+  .nb-mega-view-all:hover svg {
+    transform: translateX(4px);
+  }
 
   /* Desktop actions — hidden on mobile */
   .nb-actions {
     display: none;
     align-items: center;
-    gap: 0.625rem;
+    gap: 0.75rem;
     margin-left: auto;
     flex-shrink: 0;
   }
@@ -397,42 +494,65 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
   .nb-action-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625rem;
     background: #fff;
-    border: 1px solid color-mix(in srgb, var(--brand-secondary) 20%, transparent);
-    color: var(--brand-secondary);
-    padding: 0.625rem 1.25rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    border: 1.5px solid color-mix(in srgb, var(--brand-secondary) 25%, var(--brand-tertiary));
+    color: var(--brand-primary);
+    padding: 0.75rem 1.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
-    transition: all 0.2s;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
   .nb-action-btn:hover {
-    border-color: var(--brand-highlight);
-    background: color-mix(in srgb, var(--brand-highlight) 10%, transparent);
-    color: var(--brand-primary);
+    border-color: var(--brand-secondary);
+    background: var(--brand-tertiary);
+    color: var(--brand-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-secondary) 20%, transparent);
+  }
+  .nb-action-btn svg {
+    color: var(--brand-secondary);
+    transition: transform 0.2s ease;
+  }
+  .nb-action-btn:hover svg {
+    transform: scale(1.1);
   }
   .nb-phone-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: var(--brand-primary);
+    gap: 0.625rem;
+    background: var(--brand-secondary);
     color: #fff;
-    padding: 0.625rem 1.5rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    padding: 0.875rem 1.75rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    transition: background 0.2s;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-secondary) 35%, transparent);
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
-  .nb-phone-btn:hover { background: var(--brand-secondary); }
-  .nb-phone-btn svg { color: var(--brand-highlight); }
+  .nb-phone-btn:hover {
+    background: var(--brand-highlight);
+    color: var(--brand-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--brand-highlight) 50%, transparent);
+  }
+  .nb-phone-btn svg {
+    color: #fff;
+    transition: all 0.2s ease;
+  }
+  .nb-phone-btn:hover svg {
+    color: var(--brand-primary);
+    transform: rotate(15deg) scale(1.1);
+  }
 
   /* ── Mobile logo + hamburger ── */
   .nb-mobile-logo {
@@ -441,15 +561,20 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     gap: 0.75rem;
     flex-shrink: 0;
     text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .nb-mobile-logo:hover {
+    transform: translateY(-1px);
   }
   @media (min-width: 1024px) { .nb-mobile-logo { display: none; } }
 
   .nb-mobile-name {
     display: none;
-    font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.02em;
     color: var(--brand-primary);
   }
   @media (min-width: 768px) { .nb-mobile-name { display: block; } }
@@ -459,25 +584,46 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     align-items: center;
     justify-content: center;
     margin-left: auto;
-    padding: 0.5rem;
+    padding: 0.625rem;
     cursor: pointer;
-    color: var(--brand-primary);
-    transition: color 0.2s;
+    color: var(--foreground);
+    transition: all 0.2s ease;
     flex-shrink: 0;
+    border-radius: 8px;
   }
   @media (min-width: 1024px) { .nb-hamburger { display: none; } }
-  .nb-hamburger:hover { color: var(--brand-highlight); }
-  .nb-ham-icon, .nb-close-icon { width: 1.5rem; height: 1.5rem; }
+  .nb-hamburger:hover {
+    color: var(--brand-secondary);
+    background: var(--muted);
+  }
+  .nb-ham-icon, .nb-close-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: transform 0.2s ease;
+  }
   .nb-close-icon { display: none; }
   /* Show X when open */
-  .nb-mobile-toggle-input:checked ~ header .nb-close-icon { display: block; }
+  .nb-mobile-toggle-input:checked ~ header .nb-close-icon {
+    display: block;
+    animation: rotateIn 0.3s ease;
+  }
   .nb-mobile-toggle-input:checked ~ header .nb-ham-icon { display: none; }
+  @keyframes rotateIn {
+    from {
+      transform: rotate(-90deg);
+      opacity: 0;
+    }
+    to {
+      transform: rotate(0);
+      opacity: 1;
+    }
+  }
 
   /* ── Mobile drawer ── */
   .nb-mobile-drawer {
     position: fixed;
     inset: 0;
-    z-index: 200;
+    z-index: 100;
     pointer-events: none;
     visibility: hidden;
   }
@@ -489,23 +635,25 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
   .nb-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: color-mix(in srgb, var(--brand-primary) 70%, transparent);
+    backdrop-filter: blur(4px);
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s ease;
   }
   .nb-mobile-toggle-input:checked ~ .nb-mobile-drawer .nb-backdrop { opacity: 1; }
 
   .nb-drawer-panel {
     position: absolute;
     top: 0; right: 0; bottom: 0;
-    width: min(400px, 100vw);
+    width: min(420px, 100vw);
     background: #fff;
     overflow-y: auto;
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
+    box-shadow: -10px 0 40px color-mix(in srgb, var(--brand-primary) 25%, transparent);
   }
   .nb-mobile-toggle-input:checked ~ .nb-mobile-drawer .nb-drawer-panel {
     transform: translateX(0);
@@ -515,95 +663,137 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    background: var(--brand-primary);
+    gap: 0.75rem;
+    background: var(--brand-secondary);
     color: #fff;
-    padding: 1rem;
+    padding: 1.25rem;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 1.125rem;
     text-decoration: none;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
     flex-shrink: 0;
+    cursor: pointer;
   }
-  .nb-drawer-phone svg { color: var(--brand-highlight); }
-  .nb-drawer-phone:hover { background: var(--brand-secondary); }
+  .nb-drawer-phone svg {
+    color: #fff;
+    transition: transform 0.2s ease;
+  }
+  .nb-drawer-phone:hover {
+    background: var(--brand-primary);
+  }
+  .nb-drawer-phone:hover svg {
+    transform: rotate(15deg) scale(1.1);
+  }
 
-  .nb-drawer-section { padding: 1rem; }
-  .nb-drawer-section--muted { background: color-mix(in srgb, var(--brand-tertiary) 50%, transparent); }
-  .nb-drawer-section--white { background: #fff; border-top: 1px solid var(--brand-tertiary); }
+  .nb-drawer-section { padding: 1.25rem; }
+  .nb-drawer-section--muted { background: var(--brand-tertiary); }
+  .nb-drawer-section--white { background: #fff; border-top: 1px solid color-mix(in srgb, var(--brand-secondary) 15%, var(--brand-tertiary)); }
 
   .nb-drawer-section-label {
-    font-size: 0.625rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6875rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.1em;
     color: var(--brand-highlight);
     border-bottom: 2px solid var(--brand-highlight);
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.375rem;
     display: inline-block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .nb-drawer-link {
     display: block;
-    padding: 0.75rem 0;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 600;
+    padding: 0.875rem 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
     color: var(--brand-primary);
     text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--brand-highlight) 10%, transparent);
-    transition: color 0.2s;
+    border-bottom: 1px solid color-mix(in srgb, var(--brand-secondary) 15%, var(--brand-tertiary));
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
   .nb-drawer-link:last-child { border-bottom: none; }
-  .nb-drawer-link:hover { color: var(--brand-highlight); }
+  .nb-drawer-link:hover {
+    color: var(--brand-secondary);
+    padding-left: 0.5rem;
+  }
 
   /* Details/summary accordion — CSS only */
   .nb-drawer-details {
-    border-bottom: 1px solid color-mix(in srgb, var(--brand-highlight) 10%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--brand-secondary) 15%, var(--brand-tertiary));
   }
   .nb-drawer-details:last-child { border-bottom: none; }
   .nb-drawer-summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 0;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 600;
+    padding: 0.875rem 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
     color: var(--brand-primary);
     cursor: pointer;
     list-style: none;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
   }
   .nb-drawer-summary::-webkit-details-marker { display: none; }
-  .nb-drawer-summary:hover { color: var(--brand-highlight); }
+  .nb-drawer-summary:hover {
+    color: var(--brand-secondary);
+    padding-left: 0.5rem;
+  }
   .nb-drawer-chevron {
-    width: 1rem; height: 1rem;
+    width: 1.125rem;
+    height: 1.125rem;
     flex-shrink: 0;
-    transition: transform 0.2s;
+    transition: transform 0.3s ease;
+    color: color-mix(in srgb, var(--brand-primary) 60%, transparent);
+  }
+  .nb-drawer-details[open] .nb-drawer-chevron {
+    transform: rotate(180deg);
     color: var(--brand-secondary);
   }
-  .nb-drawer-details[open] .nb-drawer-chevron { transform: rotate(180deg); }
 
-  .nb-drawer-children { padding: 0 0 0.75rem 1rem; }
+  .nb-drawer-children {
+    padding: 0.5rem 0 1rem 1.25rem;
+    animation: slideDown 0.2s ease;
+  }
   .nb-drawer-child {
     display: block;
-    padding: 0.375rem 0;
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--brand-secondary);
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--brand-primary) 70%, transparent);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    padding-left: 1rem;
   }
-  .nb-drawer-child:hover { color: var(--brand-highlight); }
+  .nb-drawer-child::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--brand-secondary) 40%, var(--brand-tertiary));
+    transition: all 0.2s ease;
+  }
+  .nb-drawer-child:hover {
+    color: var(--brand-secondary);
+    padding-left: 1.25rem;
+  }
+  .nb-drawer-child:hover::before {
+    background: var(--brand-secondary);
+    width: 6px;
+    height: 6px;
+  }
 
   .nb-drawer-actions {
     display: flex;
-    border-top: 1px solid var(--brand-tertiary);
+    border-top: 1px solid color-mix(in srgb, var(--brand-secondary) 15%, var(--brand-tertiary));
     margin-top: auto;
     flex-shrink: 0;
   }
@@ -612,18 +802,38 @@ import { utilityNavItems, mainNavItems, quickActions } from "@/config/navigation
     flex: 1;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: color-mix(in srgb, var(--brand-tertiary) 60%, transparent);
+    gap: 0.625rem;
+    padding: 1.25rem;
+    background: var(--brand-tertiary);
     color: var(--brand-primary);
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
-  .nb-drawer-action:hover { background: var(--brand-tertiary); }
-  .nb-drawer-action--border { border-left: 1px solid color-mix(in srgb, var(--brand-highlight) 15%, transparent); }
-  .nb-drawer-action svg { color: var(--brand-secondary); }
+  .nb-drawer-action:hover {
+    background: color-mix(in srgb, var(--brand-tertiary) 70%, var(--brand-secondary));
+    color: var(--brand-secondary);
+  }
+  .nb-drawer-action--border {
+    border-left: 1px solid color-mix(in srgb, var(--brand-secondary) 20%, var(--brand-tertiary));
+  }
+  .nb-drawer-action svg {
+    color: var(--brand-secondary);
+    transition: transform 0.2s ease;
+  }
+  .nb-drawer-action:hover svg {
+    transform: scale(1.1);
+  }
+
+  /* Accessibility: Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
