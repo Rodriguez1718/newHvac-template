@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "bunx --bun astro dev",
+    "build": "bunx --bun astro build",
+    "preview": "bunx --bun astro preview",
     "astro": "astro"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/react": "^4.4.2",
     "@astrojs/sitemap": "^3.6.1",
+    "@astrojs/vercel": "^10.0.6",
     "@lucide/astro": "^0.562.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-navigation-menu": "^1.2.14",
