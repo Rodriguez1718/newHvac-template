@@ -148,7 +148,8 @@ const isSlider = variant === "slider";
       <defs>
         <linearGradient id="edge-fade" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" style="stop-color:white;stop-opacity:1" />
-          <stop offset="60%" style="stop-color:white;stop-opacity:1" />
+          <stop offset="70%" style="stop-color:white;stop-opacity:1" />
+          <stop offset="85%" style="stop-color:white;stop-opacity:0.6" />
           <stop offset="100%" style="stop-color:white;stop-opacity:0" />
         </linearGradient>
       </defs>
@@ -227,9 +228,19 @@ const isSlider = variant === "slider";
             </div>
 
             <!-- Title with enhanced typography -->
-            <h1 class="hero-title text-[2.5rem] md:text-6xl lg:text-7xl font-black leading-[0.95] mb-6 uppercase tracking-[-0.02em]">
-              {getLocationText(slide.title)}
-            </h1>
+            <div class="relative mb-6">
+              <h1 class="hero-title text-[2.5rem] md:text-6xl lg:text-7xl font-black leading-[0.95] uppercase tracking-[-0.02em] relative">
+                {getLocationText(slide.title).split(' ').map((word, idx) => (
+                  <span class="hero-title-word inline-block" style={`--word-index: ${idx}`}>
+                    <span class="hero-title-bg-word absolute inset-0 -z-10"></span>
+                    <span class="relative">{word}</span>
+                  </span>
+                )).reduce((acc, curr, idx) => {
+                  if (idx === 0) return [curr];
+                  return [...acc, ' ', curr];
+                }, [])}
+              </h1>
+            </div>
 
             <!-- Subtitle with better spacing -->
             <p class="hero-subtitle text-base md:text-lg leading-relaxed max-w-lg mb-8 font-medium">
@@ -237,12 +248,12 @@ const isSlider = variant === "slider";
             </p>
 
             <!-- CTA button -->
-            <button class="hero-cta group inline-flex items-center gap-3 px-5 py-3 bg-brand-highlight text-brand-primary font-bold text-lg rounded-lg shadow-2xl hover:shadow-[0_20px_60px_rgba(255,111,0,0.4)] transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 cursor-pointer border-2 border-transparent ">
+            <a href={buttonHref} class="hero-cta">
               {slide.buttonText}
-              <svg class="w-6 h-6 transition-transform duration-300 group-hover:translate-x-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-            </button>
+            </a>
           </div>
         ))}
       </div>
@@ -258,7 +269,7 @@ const isSlider = variant === "slider";
             />
           ))}
         </div>
-        <div class="progress-track flex-1 max-w-24 h-1 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm">
+        <div class="progress-track flex-1 max-w-24 h-1 bg-[#0A2540]/40 rounded-full overflow-hidden backdrop-blur-sm border border-[#0A2540]/20">
           <div class="progress-fill h-full rounded-full bg-brand-highlight"></div>
         </div>
       </div>
@@ -267,8 +278,9 @@ const isSlider = variant === "slider";
 
 </section>
 ) : (
-<!-- SUBPAGE VARIANT — unchanged -->
+<!-- SUBPAGE VARIANT -->
 <section class="hero-section relative w-full overflow-hidden">
+  <!-- Full background image -->
   <div class="absolute inset-0">
     {subpageImage && isRemoteImage(subpageImage) ? (
       <Image
@@ -308,37 +320,180 @@ const isSlider = variant === "slider";
     )}
   </div>
 
-  <div class="hero-slope absolute inset-0 z-[1]">
+  <!-- Accent bar -->
+  <div class="absolute top-0 left-0 w-full h-1 bg-brand-highlight z-[5]"></div>
+
+  <!-- Static solid white polygon with blur edge -->
+  <div class="slope-white absolute inset-0 z-[1] pointer-events-none">
     <svg class="h-full w-full" viewBox="0 0 1440 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="0,0 580,0 920,800 0,800" fill="white" />
-      <polygon points="580,0 700,0 1040,800 920,800" fill="white" opacity="0.55" />
-      <polygon points="700,0 800,0 1140,800 1040,800" fill="white" opacity="0.25" />
+      <defs>
+        <linearGradient id="edge-fade-subpage" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:white;stop-opacity:1" />
+          <stop offset="70%" style="stop-color:white;stop-opacity:1" />
+          <stop offset="85%" style="stop-color:white;stop-opacity:0.6" />
+          <stop offset="100%" style="stop-color:white;stop-opacity:0" />
+        </linearGradient>
+      </defs>
+      <polygon points="0,0 480,0 820,800 0,800" fill="url(#edge-fade-subpage)" />
     </svg>
   </div>
 
-  <div class="absolute top-0 left-0 w-full h-1 bg-brand-highlight z-[5]"></div>
+  <!-- Slope layers with image -->
+  <div class="absolute inset-0 z-[2] pointer-events-none">
+    <div class="slope-set-subpage absolute inset-0">
+      <!-- Slope A: full opacity -->
+      <div class="slope-wrap slope-a">
+        {subpageImage && isRemoteImage(subpageImage) ? (
+          <img
+            src={subpageImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        ) : subpageImage ? (
+          <img
+            src={subpageImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        ) : (
+          <img
+            src={bg2Img.src}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        )}
+      </div>
 
-  <div class="relative z-[2] container mx-auto px-6 md:px-12 lg:px-16 flex items-end min-h-[85vh]">
-    <div class="hero-content max-w-xl pb-14 md:pb-16 lg:pb-20">
+      <!-- Slope B: 55% opacity -->
+      <div class="slope-wrap slope-b">
+        {subpageImage && isRemoteImage(subpageImage) ? (
+          <img
+            src={subpageImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        ) : subpageImage ? (
+          <img
+            src={subpageImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        ) : (
+          <img
+            src={bg2Img.src}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        )}
+      </div>
+
+      <!-- Slope C: 25% opacity -->
+      <div class="slope-wrap slope-c">
+        {subpageImage && isRemoteImage(subpageImage) ? (
+          <img
+            src={subpageImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        ) : subpageImage ? (
+          <img
+            src={subpageImage}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        ) : (
+          <img
+            src={bg2Img.src}
+            alt=""
+            aria-hidden="true"
+            class="slope-img"
+            loading="eager"
+            decoding="async"
+            width="1440"
+            height="810"
+          />
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Content — pinned bottom-left -->
+  <div class="relative z-[3] container mx-auto px-6 md:px-12 lg:px-16 flex items-end min-h-[85vh]">
+    <div class="hero-content max-w-2xl pb-16 md:pb-20 lg:pb-24">
       {badge && (
-        <div class="mb-5">
-          <span class="hero-eyebrow text-[11px] md:text-xs font-semibold tracking-[0.18em] uppercase text-brand-highlight inline-block pb-2 border-b-2 border-brand-highlight">
-            {getLocationText(badge)}
-          </span>
+        <div class="mb-6">
+          <div class="border-l-4 border-l-[#FF6F00] inline-flex items-center gap-3 px-5 py-3 bg-[#0A2540]/95 backdrop-blur-sm shadow-xl border border-[#1E3A5F]">
+            <span class="text-xs font-bold tracking-[0.12em] uppercase text-white">
+              {getLocationText(badge)}
+            </span>
+          </div>
         </div>
       )}
-      <h1 class="hero-title text-[2.2rem] md:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.05] mb-5 uppercase tracking-tight">
-        {subpageTitle && getLocationText(subpageTitle)}
-      </h1>
+
+      <div class="relative mb-6">
+        <h1 class="hero-title text-[2.5rem] md:text-6xl lg:text-7xl font-black leading-[0.95] uppercase tracking-[-0.02em] relative">
+          {subpageTitle && getLocationText(subpageTitle).split(' ').map((word, idx) => (
+            <span class="hero-title-word inline-block" style={`--word-index: ${idx}`}>
+              <span class="hero-title-bg-word absolute inset-0 -z-10"></span>
+              <span class="relative">{word}</span>
+            </span>
+          )).reduce((acc, curr, idx) => {
+            if (idx === 0) return [curr];
+            return [...acc, ' ', curr];
+          }, [])}
+        </h1>
+      </div>
+
       {subpageSubtitle && (
-        <p class="hero-subtitle text-xs md:text-sm leading-relaxed max-w-sm">
+        <p class="hero-subtitle text-base md:text-lg leading-relaxed max-w-lg mb-8 font-medium">
           {getLocationText(subpageSubtitle)}
         </p>
       )}
+
       {trustIndicators && trustIndicators.length > 0 && (
-        <div class="flex flex-wrap gap-4 mt-6">
+        <div class="flex flex-wrap gap-4 mb-8">
           {trustIndicators.map((indicator) => (
-            <span class="inline-flex items-center gap-2 text-sm text-gray-500">
+            <span class="inline-flex items-center gap-2 text-sm font-medium" style="color: #1a1a1a; text-shadow: 0 1px 10px rgba(255, 255, 255, 0.5);">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-highlight" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 6 9 17l-5-5"/>
               </svg>
@@ -346,6 +501,15 @@ const isSlider = variant === "slider";
             </span>
           ))}
         </div>
+      )}
+
+      {subpageButtonText && (
+        <a href={buttonHref} class="hero-cta">
+          {subpageButtonText}
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
       )}
     </div>
   </div>
@@ -433,31 +597,65 @@ const isSlider = variant === "slider";
   }
 
   /* ── Text slides ── */
+  .hero-title-word {
+    position: relative;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.25rem;
+  }
+  
+
+  
+  /* Alternate colors per word */
+  .hero-title-word:nth-child(4n+1) .hero-title-bg-word {
+    background: var(--brand-primary);
+  }
+  .hero-title-word:nth-child(4n+2) .hero-title-bg-word {
+    background: var(--brand-highlight);
+  }
+  .hero-title-word:nth-child(4n+3) .hero-title-bg-word {
+    background: var(--brand-primary);
+  }
+  .hero-title-word:nth-child(4n+4) .hero-title-bg-word {
+    background: var(--brand-highlight);
+  }
+  
   .hero-title { 
-    color: #0A2540;
+    color: #fff;
     line-height: 0.95;
-    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
   }
   .hero-subtitle { 
     color: #1a1a1a;
     text-shadow: 0 1px 10px rgba(255, 255, 255, 0.5);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
+    paint-order: stroke fill;
   }
 
   /* CTA button */
   .hero-cta {
-    position: relative;
-    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.7rem 1.75rem;
+    background: var(--brand-highlight);
+    color: #0a0a0a;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
-  .hero-cta::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-    transform: translateX(-100%);
-    transition: transform 0.6s ease;
+  .hero-cta:hover {
+    filter: brightness(1.08);
+    transform: translateX(4px);
   }
-  .hero-cta:hover::before {
-    transform: translateX(100%);
+  .hero-cta svg {
+    transition: transform 0.3s ease;
+  }
+  .hero-cta:hover svg {
+    transform: translateX(4px);
   }
 
   .slides-container { position: relative; }
@@ -482,15 +680,17 @@ const isSlider = variant === "slider";
     width: 12px; 
     height: 12px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.4);
-    border: 2px solid rgba(255,255,255,0.6);
+    background: var(--brand-primary);
+    border: 2px solid var(--brand-primary);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(10, 37, 64, 0.3);
   }
   .hero-dot:hover  { 
-    background: rgba(255,255,255,0.7);
+    background: var(--brand-highlight);
+    border-color: var(--brand-highlight);
     transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(255, 111, 0, 0.4);
   }
   .hero-dot.active {
     background: var(--brand-highlight);

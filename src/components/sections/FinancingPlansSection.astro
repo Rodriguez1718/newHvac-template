@@ -17,6 +17,14 @@ interface Props {
 
 const { badge, title, subtitle, items, variant = "plans" } = Astro.props;
 
+// Hardcoded images for Services variant only
+const serviceImages = [
+  "https://trusteyman.com/wp-content/uploads/2020/06/AdobeStock_162711692-1024x683.jpeg",
+  "https://mrhomeservicesnj.com/wp-content/uploads/2016/12/Heating-Services.jpg",
+  "https://saguaroairsolutions.com/wp-content/uploads/2026/01/about-us-image.jpg-2.png",
+  "https://all-spec.net/wp-content/uploads/2024/05/emergency-hvac.jpg",
+];
+
 const iconSvgs: Record<string, string> = {
   percent: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
   zero: `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>`,
@@ -105,27 +113,20 @@ function getIcon(key?: string): string {
         "fps-svc-grid",
         items.length <= 3 ? "fps-svc-grid--narrow" : ""
       ]} data-animate-stagger>
-        {items.map((item) => {
+        {items.map((item, index) => {
           const isLink = !!item.href;
           const Tag = isLink ? "a" : "div";
+          const cardImage = serviceImages[index % serviceImages.length];
           return (
             <Tag
               href={isLink ? item.href : undefined}
               class="fps-svc-card group"
             >
-              {/* Image strip */}
-              {item.image ? (
-                <div class="fps-svc-img">
-                  <img src={item.image} alt={item.title} class="fps-svc-img-el" width="740" height="494" loading="lazy" decoding="async" />
-                  <div class="fps-svc-img-overlay"></div>
-                </div>
-              ) : (
-                <div class="fps-svc-img fps-svc-img--placeholder">
-                  <div class="fps-svc-img-icon">
-                    <Fragment set:html={getIcon(item.icon)} />
-                  </div>
-                </div>
-              )}
+              {/* Image strip - always use hardcoded images */}
+              <div class="fps-svc-img">
+                <img src={cardImage} alt={item.title} class="fps-svc-img-el" width="740" height="494" loading="lazy" decoding="async" />
+                <div class="fps-svc-img-overlay"></div>
+              </div>
 
               {/* Accent strip */}
               <span class="fps-svc-strip"></span>
@@ -200,7 +201,13 @@ function getIcon(key?: string): string {
      FEATURES VARIANT
      ═══════════════════════════════════════════ */
   .fps-feat {
-    background: var(--brand-tertiary);
+    position: relative;
+    background: var(--background);
+  }
+
+  .fps-feat > .container {
+    position: relative;
+    z-index: 1;
   }
 
   .fps-feat-header {
@@ -380,7 +387,45 @@ function getIcon(key?: string): string {
      SERVICES VARIANT
      ═══════════════════════════════════════════ */
   .fps-svc {
+    position: relative;
     background: var(--background);
+  }
+  .fps-svc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/aircon.png');
+    background-size: 65%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .fps-svc::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .fps-svc::before {
+      background-size: 75%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .fps-svc::before {
+      background-size: 90%;
+    }
+  }
+
+  .fps-svc > .container {
+    position: relative;
+    z-index: 1;
   }
 
   .fps-svc-header {
@@ -576,7 +621,13 @@ function getIcon(key?: string): string {
      PLANS VARIANT
      ═══════════════════════════════════════════ */
   .fps-plan {
+    position: relative;
     background: var(--background);
+  }
+
+  .fps-plan > .container {
+    position: relative;
+    z-index: 1;
   }
 
   .fps-plan-header {

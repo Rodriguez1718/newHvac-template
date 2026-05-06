@@ -38,11 +38,6 @@ const defaultBackgrounds = [
   <!-- Modern gradient background -->
   <div class="absolute inset-0 bg-gradient-to-br from-[#0A2540] via-[#0D2D4F] to-[#132F4C]"></div>
   
-  <!-- Animated pattern overlay -->
-  <div class="absolute inset-0 opacity-5">
-    <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 48px 48px;"></div>
-  </div>
-
   <div class="relative z-[1] container mx-auto px-6 md:px-12 lg:px-16">
     <!-- Section header -->
     <div class="mb-16 text-center" data-animate="fade-scale">
@@ -59,9 +54,8 @@ const defaultBackgrounds = [
     <div class="cpn-grid" data-animate-stagger>
       {coupons.map((coupon, i) => {
         const colors = [
-          { bg: '#FFD700', text: '#1A1A1A' }, // yellow
-          { bg: '#00D4D4', text: '#1A1A1A' }, // cyan
-          { bg: '#FF6B35', text: '#FFFFFF' }  // orange
+          { bg: 'var(--brand-highlight)', text: '#FFFFFF' }, // orange
+          { bg: '#1E88E5', text: '#FFFFFF' },                // bright blue
         ];
         const color = colors[i % colors.length];
         
@@ -227,6 +221,12 @@ const defaultBackgrounds = [
     white-space: nowrap;
   }
 
+  @media (max-width: 768px) {
+    .cpn-ticket-side-text span {
+      letter-spacing: 0.2em;
+    }
+  }
+
   /* ─── Main Content ─── */
   .cpn-ticket-content {
     flex: 1;
@@ -251,6 +251,7 @@ const defaultBackgrounds = [
     background: rgba(0, 0, 0, 0.85);
     padding: clamp(0.4rem, 1.2vw, 1.5rem) clamp(0.75rem, 2.2vw, 2.5rem);
     border-radius: clamp(4px, 0.8vw, 8px);
+    border: 2px solid var(--ticket-text);
   }
 
   .cpn-ticket-discount {
@@ -260,6 +261,7 @@ const defaultBackgrounds = [
     line-height: 1;
     text-transform: uppercase;
     letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 
   .cpn-ticket-label {

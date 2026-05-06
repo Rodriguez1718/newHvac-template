@@ -111,7 +111,7 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
 
   /* ─── Text Side ─── */
   .cc-eyebrow {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
   }
   .cc-eyebrow-text {
     font-size: 0.7rem;
@@ -120,8 +120,9 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
     letter-spacing: 0.2em;
     color: var(--brand-highlight);
     display: inline-block;
-    padding-bottom: 0.5rem;
-    border-bottom: 3px solid var(--brand-highlight);
+    padding: 0.4rem 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--brand-highlight);
   }
 
   .cc-title {
@@ -134,7 +135,7 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
     margin-bottom: 1rem;
   }
   @media (min-width: 768px) {
-    .cc-title { font-size: 2.25rem; }
+    .cc-title { font-size: 2.5rem; }
   }
 
   .cc-divider {
@@ -147,7 +148,7 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
   .cc-desc {
     font-size: 0.95rem;
     line-height: 1.75;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.7);
     margin-bottom: 2rem;
   }
 
@@ -155,11 +156,11 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
-    padding: 0.8rem 2rem;
+    padding: 0.75rem 1.5rem;
     background: var(--brand-highlight);
     color: var(--brand-primary);
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -180,6 +181,11 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
   .cc-image-wrap {
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: border-color 0.35s ease;
+  }
+  .cc-image-wrap:hover {
+    border-color: var(--brand-highlight);
   }
   .cc-image {
     width: 100%;
@@ -197,25 +203,29 @@ const description = rawDescription ? getLocationText(rawDescription) : undefined
     inset: 0;
     background: linear-gradient(
       160deg,
-      color-mix(in srgb, var(--brand-primary) 25%, transparent) 0%,
+      rgba(10, 37, 64, 0.3) 0%,
       transparent 50%
     );
   }
 
   .cc-image-strip {
     position: absolute;
-    top: 10%;
+    top: 0;
     left: 0;
     width: 3px;
-    height: 40%;
+    height: 0;
     background: var(--brand-highlight);
     z-index: 2;
+    transition: height 0.35s ease;
+  }
+  .cc-image-wrap:hover .cc-image-strip {
+    height: 100%;
   }
 
   .cc-image-placeholder {
     aspect-ratio: 4 / 3;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -245,7 +245,21 @@ const {
     position: relative;
     overflow: hidden;
     min-height: 100%;
+    border-right: 1px solid rgba(0,0,0,0.06);
   }
+
+  /* Left strip animation */
+  .popup-image-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--brand-highlight);
+    z-index: 5;
+  }
+
   .popup-image {
     width: 100%;
     height: 100%;
@@ -332,41 +346,44 @@ const {
 
   /* Eyebrow */
   .popup-eyebrow-wrap {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
   .popup-eyebrow {
     display: inline-block;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     color: var(--brand-highlight);
-    padding: 0.35rem 0.75rem;
+    padding: 0.4rem 1rem;
     background: var(--brand-primary);
+    border-left: 3px solid var(--brand-highlight);
   }
 
   .popup-title {
-    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 800;
-    font-size: 1.75rem;
+    font-size: 2rem;
     color: var(--brand-primary);
     text-transform: uppercase;
-    letter-spacing: 0.02em;
-    line-height: 1.15;
-    margin: 0 0 0.35rem;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 0.5rem;
+  }
+  @media (min-width: 768px) {
+    .popup-title { font-size: 2.25rem; }
   }
   .popup-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: var(--brand-secondary);
     margin: 0 0 1.25rem;
   }
 
   .popup-divider {
-    width: 2.5rem;
+    width: 3rem;
     height: 3px;
     background: var(--brand-highlight);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   /* Features */
@@ -404,12 +421,11 @@ const {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.625rem;
     width: 100%;
-    padding: 0.9rem 1.75rem;
-    font-family: 'Inter', system-ui, sans-serif;
+    padding: 0.75rem 1.5rem;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     text-decoration: none;
@@ -418,13 +434,13 @@ const {
   }
 
   .popup-btn-icon {
-    width: 0.9rem;
-    height: 0.9rem;
+    width: 1rem;
+    height: 1rem;
     flex-shrink: 0;
   }
   .popup-btn-arrow {
-    width: 0.9rem;
-    height: 0.9rem;
+    width: 1rem;
+    height: 1rem;
     flex-shrink: 0;
     transition: transform 0.3s ease;
   }
@@ -445,7 +461,7 @@ const {
     color: #fff;
   }
   .popup-btn-dark:hover {
-    opacity: 0.9;
+    filter: brightness(1.1);
   }
 
   /* Trust */
@@ -460,10 +476,10 @@ const {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.6rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--brand-secondary);
   }
   .popup-trust-dot {

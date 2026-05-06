@@ -305,6 +305,8 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     justify-content: center;
     gap: 1rem;
     margin-top: 2.5rem;
+    flex-wrap: wrap;
+    max-width: 100%;
   }
 
   .tm-arrow {
@@ -337,6 +339,9 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
   }
   .tm-dots :global(button) {
     width: 28px;
@@ -387,6 +392,8 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
       const controls = carousel.querySelector<HTMLElement>('.tm-controls');
       let currentIndex = 0;
       let perView = getPerView();
+      let autoplayInterval: number | null = null;
+      const AUTOPLAY_DELAY = 5000; // 5 seconds between slides
 
       function getPerView(): number {
         if (window.innerWidth <= 640) return 1;
@@ -429,8 +436,27 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
       function next() { goTo(currentIndex >= maxIndex() ? 0 : currentIndex + 1); }
       function prev() { goTo(currentIndex <= 0 ? maxIndex() : currentIndex - 1); }
 
-      prevBtn.addEventListener('click', prev);
-      nextBtn.addEventListener('click', next);
+      function startAutoplay() {
+        stopAutoplay();
+        if (maxIndex() > 0) {
+          autoplayInterval = window.setInterval(next, AUTOPLAY_DELAY);
+        }
+      }
+
+      function stopAutoplay() {
+        if (autoplayInterval !== null) {
+          clearInterval(autoplayInterval);
+          autoplayInterval = null;
+        }
+      }
+
+      function resetAutoplay() {
+        stopAutoplay();
+        startAutoplay();
+      }
+
+      prevBtn.addEventListener('click', () => { prev(); resetAutoplay(); });
+      nextBtn.addEventListener('click', () => { next(); resetAutoplay(); });
 
       let startX = 0;
       let dragOffset = 0;
@@ -441,6 +467,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
         isDragging = true; startX = e.clientX;
         trackOffset = currentIndex * slides[0].offsetWidth;
         track!.classList.add('is-dragging');
+        stopAutoplay();
         e.preventDefault();
       });
       window.addEventListener('mousemove', (e) => {
@@ -456,12 +483,14 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
         else if (dragOffset > 50) prev();
         else goTo(currentIndex);
         dragOffset = 0;
+        resetAutoplay();
       });
 
       viewport.addEventListener('touchstart', (e) => {
         isDragging = true; startX = e.touches[0].clientX;
         trackOffset = currentIndex * slides[0].offsetWidth;
         track!.classList.add('is-dragging');
+        stopAutoplay();
       }, { passive: true });
       viewport.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
@@ -476,6 +505,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
         else if (dragOffset > 50) prev();
         else goTo(currentIndex);
         dragOffset = 0;
+        resetAutoplay();
       }, { passive: true });
 
       window.addEventListener('resize', () => {
@@ -483,11 +513,26 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
         buildDots();
         syncControlsVisibility();
         goTo(Math.min(currentIndex, maxIndex()));
+        resetAutoplay();
+      });
+
+      // Pause autoplay when user hovers over carousel
+      carousel.addEventListener('mouseenter', stopAutoplay);
+      carousel.addEventListener('mouseleave', startAutoplay);
+
+      // Pause autoplay when page is hidden
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopAutoplay();
+        } else {
+          startAutoplay();
+        }
       });
 
       buildDots();
       syncControlsVisibility();
       goTo(0);
+      startAutoplay(); // Start autoplay on init
     });
   }
 
