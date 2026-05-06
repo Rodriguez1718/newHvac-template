@@ -149,13 +149,14 @@ const faqs = rawFaqs.map(faq => ({
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('/images/aircon.png');
+    background-image: url('/images/heater.png');
     background-size: 65%;
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.35;
     pointer-events: none;
     z-index: 0;
+    transform: scaleX(-1);
   }
 
   @media (max-width: 1024px) {
