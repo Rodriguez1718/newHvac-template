@@ -4,10 +4,17 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://acmeinc.com', // Update with actual domain
+  output: 'static',
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true
+    }
+  }),
   
   vite: {
     plugins: [
