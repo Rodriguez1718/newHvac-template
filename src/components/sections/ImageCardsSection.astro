@@ -20,7 +20,7 @@ const { cards } = Astro.props;
       {cards.map((card) => (
         <div class="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-card border-2 border-transparent hover:border-brand-highlight">
           <div class="aspect-[4/3] overflow-hidden">
-            <Image 
+            <Image   
               src={card.image} 
               alt={card.title || "Service image"} 
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"

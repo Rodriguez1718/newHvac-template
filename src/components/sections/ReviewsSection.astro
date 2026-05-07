@@ -37,7 +37,7 @@ const reviews = rawReviews.map(r => ({ ...r, content: getLocationText(r.content)
           {description && <p class="rv-desc" set:html={description} />}
         </div>
       </div>
-
+  
       <!-- Carousel -->
       <div class="rv-carousel" data-animate="fade-up" data-animate-delay="100">
         <div class="rv-viewport">

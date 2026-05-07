@@ -11,7 +11,7 @@ interface ServiceCategory {
   services: Service[];
 }
 
-interface Props {
+interface Props {  
   title: string;
   description: string;
   categories: ServiceCategory[];

@@ -35,7 +35,7 @@ const { title, description, categories, badge = "Our Services" } = Astro.props;
         <p class="ss-desc" set:html={description} />
       </div>
     </div>
-
+  
     <!-- Categories -->
     <div class="ss-categories" data-animate-stagger>
       {categories.map((category) => (
