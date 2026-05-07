@@ -499,7 +499,7 @@ const testimonials = rawTestimonials.map(t => ({ ...t, content: getLocationText(
       }, { passive: true });
       viewport.addEventListener('touchend', () => {
         if (!isDragging) return;
-        isDragging = false;
+        isDragging = false;  
         track!.classList.remove('is-dragging');
         if (dragOffset < -50) next();
         else if (dragOffset > 50) prev();
