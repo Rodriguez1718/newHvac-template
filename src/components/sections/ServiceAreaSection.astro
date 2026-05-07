@@ -165,11 +165,44 @@ const embedUrl = mapEmbed || (mapAddress ? getMapEmbedUrl(mapAddress) : null);
 
 <style>
   .sa-section {
-    background: var(--background);
+    background: var(--brand-tertiary);
+    position: relative;
+  }
+  .sa-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/USA.png');
+    background-size: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sa-section > .container {
+    position: relative;
+    z-index: 1;
   }
 
   .sa-full {
     background: white;
+  }
+  .sa-full::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/USA.png');
+    background-size: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sa-full > .container {
+    position: relative;
+    z-index: 1;
   }
 
   /* ─── Header ─── */

@@ -73,13 +73,28 @@ const borderStyle = borderColor ? `border-top-color: ${borderColor}; border-bott
 
 <style>
   .cta-strip {
+    position: relative;
     background: var(--brand-primary);
     padding: 1.5rem 0;
     border-top: 3px solid var(--brand-highlight);
     border-bottom: 3px solid var(--brand-highlight);
   }
+  .cta-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/coolair.png');
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
 
   .cta-inner {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     align-items: center;

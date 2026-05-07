@@ -35,19 +35,20 @@ const defaultBackgrounds = [
 ---
 
 <section class="cpn-section relative overflow-hidden py-24 md:py-32">
-  <!-- Modern gradient background -->
-  <div class="absolute inset-0 bg-gradient-to-br from-[#0A2540] via-[#0D2D4F] to-[#132F4C]"></div>
+  <!-- Light background with subtle pattern -->
+  <div class="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 1px 1px, rgba(10,37,64,0.15) 1px, transparent 0); background-size: 20px 20px;"></div>
   
   <div class="relative z-[1] container mx-auto px-6 md:px-12 lg:px-16">
     <!-- Section header -->
     <div class="mb-16 text-center" data-animate="fade-scale">
-      <div class="inline-flex items-center gap-3 mb-4 px-6 py-2 bg-brand-highlight/10 backdrop-blur-sm rounded-full border border-brand-highlight/20">
+      <div class="inline-flex items-center gap-3 mb-4 px-6 py-2 bg-brand-primary/5 backdrop-blur-sm rounded-full border border-brand-highlight/20">
         <svg class="w-4 h-4 text-brand-highlight" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
         </svg>
         <span class="text-xs font-bold uppercase tracking-[0.25em] text-brand-highlight">Limited Time Offers</span>
       </div>
-      <h2 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white mb-3">{title}</h2>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-brand-primary mb-3">{title}</h2>
     </div>
 
     <!-- Coupons grid -->
@@ -82,7 +83,7 @@ const defaultBackgrounds = [
                     <div class="cpn-ticket-label">COUPON</div>
                     
                   </div>
-                  <p class="">{coupon.description}</p>
+                  <p class="coupon-desc">{coupon.description}</p>
                   </div>
                   
                 </div>
@@ -151,13 +152,15 @@ const defaultBackgrounds = [
   .cpn-ticket {
     position: relative;
     display: flex;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     padding-right: clamp(50px, 12vw, 80px);
     width: 100%;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   }
 
   .cpn-ticket-wrapper:hover .cpn-ticket {
     transform: translateY(-8px);
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
   }
 
   /* ─── Ticket Main Body ─── */
@@ -166,36 +169,10 @@ const defaultBackgrounds = [
     display: flex;
     background: var(--ticket-bg);
     height: clamp(260px, 25vw, 340px);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     flex: 1;
     min-width: 0;
-  }
-
-  /* Semicircle cutout on left center */
-  .cpn-ticket-main::before {
-    content: '';
-    position: absolute;
-    left: clamp(-18px, -2.5vw, -25px);
-    top: 50%;
-    transform: translateY(-50%);
-    width: clamp(36px, 5vw, 50px);
-    height: clamp(36px, 5vw, 50px);
-    background: linear-gradient(135deg, #0D2D4F 0%, #0A2540 100%);
-    border-radius: 50%;
-  }
-
-  /* Notched edges on right (where stub connects) */
-  .cpn-ticket-stub::after {
-    content: '';
-    position: absolute;
-    right: clamp(-18px, -2.5vw, -25px);
-    top: 50%;
-    transform: translateY(-50%);
-    width: clamp(36px, 5vw, 50px);
-    height: clamp(36px, 5vw, 50px);
-    background: linear-gradient(135deg, #0D2D4F 0%, #0A2540 100%);
-    border-radius: 50%;
+    mask: radial-gradient(circle 25px at 0px 50%, transparent 25px, black 26px);
   }
 
   /* ─── Side Text (vertical) ─── */
@@ -273,6 +250,17 @@ const defaultBackgrounds = [
     margin-top: clamp(0.2rem, 0.6vw, 0.5rem);
   }
 
+  .coupon-desc {
+    font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+    font-weight: 500;
+    color: var(--ticket-text);
+    text-align: center;
+    line-height: 1.4;
+    margin-top: clamp(0.5rem, 1vw, 0.75rem);
+    opacity: 0.85;
+    max-width: 90%;
+  }
+
   /* ─── Stub (barcode section - now clickable button) ─── */
   .cpn-ticket-stub {
     position: absolute;
@@ -281,7 +269,6 @@ const defaultBackgrounds = [
     width: clamp(50px, 12vw, 80px);
     height: clamp(260px, 25vw, 340px);
     background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -291,6 +278,7 @@ const defaultBackgrounds = [
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: bottom center;
     overflow: hidden;
+    mask: radial-gradient(circle 25px at 100% 50%, transparent 25px, black 26px);
   }
 
   /* Hover: rip-off effect (top part lifts + twists) */

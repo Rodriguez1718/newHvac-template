@@ -174,6 +174,60 @@ function getIconForService(title: string): React.ReactNode {
   return fallbackIcon;
 }
 
+// Generate URL from service title
+function getServiceUrl(title: string, providedHref?: string): string {
+  if (providedHref) return providedHref;
+  
+  const lower = title.toLowerCase();
+  
+  // Specific service page mappings
+  const serviceMap: Record<string, string> = {
+    // AC Services
+    'ac repair': '/air-conditioning/ac-repair',
+    'ac tune-up': '/air-conditioning/ac-tune-up-maintenance',
+    'ac maintenance': '/air-conditioning/ac-tune-up-maintenance',
+    'ac installation': '/air-conditioning/ac-installation-replacement',
+    'ac replacement': '/air-conditioning/ac-installation-replacement',
+    'mini-split': '/air-conditioning/mini-split-systems',
+    'thermostat': '/air-conditioning/thermostats',
+    
+    // Heating Services
+    'furnace repair': '/heating/furnace-repair',
+    'furnace tune-up': '/heating/furnace-tune-up-maintenance',
+    'furnace maintenance': '/heating/furnace-tune-up-maintenance',
+    'furnace installation': '/heating/furnace-installation-replacement',
+    'furnace replacement': '/heating/furnace-installation-replacement',
+    'boiler': '/heating/boilers-installation-replacement',
+    'heat pump': '/heating',
+    
+    // Indoor Air Quality
+    'air filtration': '/indoor-air-quality/air-filtration-systems',
+    'duct cleaning': '/indoor-air-quality/duct-cleaning-sealing',
+    'duct sealing': '/indoor-air-quality/duct-cleaning-sealing',
+    'duct repair': '/indoor-air-quality/duct-repair-replacement',
+    'duct replacement': '/indoor-air-quality/duct-repair-replacement',
+    'attic insulation': '/indoor-air-quality/attic-insulation-ventilation',
+    'humidity': '/indoor-air-quality',
+    
+    // View All links
+    'view all ac': '/air-conditioning',
+    'view all heating': '/heating',
+    'view all iaq': '/indoor-air-quality',
+    'view all commercial': '/commercial',
+  };
+  
+  // Check for matches
+  for (const [key, url] of Object.entries(serviceMap)) {
+    if (lower.includes(key)) return url;
+  }
+  
+  // Commercial services
+  if (lower.includes('commercial')) return '/commercial';
+  
+  // Default fallback
+  return '/contact';
+}
+
 export function ServicesSection({ title, description, categories }: Props) {
   const [activeTab, setActiveTab] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
@@ -231,13 +285,13 @@ export function ServicesSection({ title, description, categories }: Props) {
         {/* Cards grid */}
         <div className="ss-r-grid">
           {activeCategory.services.map((service, i) => {
-            const isLink = !!service.href;
-            const Tag = isLink ? 'a' : 'div';
+            // Smart URL generation based on service title
+            const href = getServiceUrl(service.title, service.href);
 
             return (
-              <Tag
+              <a
                 key={`${activeTab}-${i}`}
-                {...(isLink ? { href: service.href } : {})}
+                href={href}
                 className={`ss-r-card group transition-all duration-500 ease-out ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                 }`}
@@ -253,15 +307,13 @@ export function ServicesSection({ title, description, categories }: Props) {
                   <h3 className="ss-r-card-title">{service.title}</h3>
                   <p className="ss-r-card-desc">{service.description}</p>
 
-                  {isLink && (
-                    <div className="ss-r-arrow">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  )}
+                  <div className="ss-r-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
-              </Tag>
+              </a>
             );
           })}
         </div>

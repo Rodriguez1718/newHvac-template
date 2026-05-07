@@ -313,6 +313,7 @@ function getIcon(key?: string): string {
     overflow: hidden;
     width: 100%;
     transition: all 0.35s ease;
+    flex-grow: 1;
   }
   .fps-feat-body:hover {
     border-color: var(--brand-highlight);
@@ -324,15 +325,13 @@ function getIcon(key?: string): string {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    height: 3px;
+    height: 0;
+    width: 3px;
     background: var(--brand-highlight);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.35s ease;
+    transition: height  0.35s ease;
   }
   .fps-feat-card:hover .fps-feat-accent {
-    transform: scaleX(1);
+    height: 100%;
   }
 
   .fps-feat-inner {
@@ -394,13 +393,14 @@ function getIcon(key?: string): string {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('/images/aircon.png');
-    background-size: 65%;
+    background-image: url('/images/aircon3.png');
+    background-size: 45%;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.35;
+    opacity: 0.25;
     pointer-events: none;
     z-index: 0;
+    transform: scaleX(-1);
   }
   .fps-svc::after {
     content: '';
@@ -413,13 +413,13 @@ function getIcon(key?: string): string {
 
   @media (max-width: 1024px) {
     .fps-svc::before {
-      background-size: 75%;
+      background-size: 55%;
     }
   }
 
   @media (max-width: 640px) {
     .fps-svc::before {
-      background-size: 90%;
+      background-size: 70%;
     }
   }
 

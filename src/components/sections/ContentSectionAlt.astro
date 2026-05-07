@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { getLocationText } from "@/config/site"
 
 interface FeatureItem {
@@ -18,8 +17,6 @@ interface Props {
   buttonText?: string;
   buttonHref?: string;
   imagePosition?: "left" | "right";
-  image?: string;
-  imageAlt?: string;
 }
 
 const {
@@ -32,8 +29,6 @@ const {
   buttonText,
   buttonHref,
   imagePosition = "left",
-  image,
-  imageAlt = "Section image"
 } = Astro.props;
 
 const title = getLocationText(rawTitle);
@@ -46,6 +41,10 @@ const features = rawFeatures.map(f => ({
 }));
 
 const isRight = imagePosition === "right";
+
+// Hardcoded image - change this to use different image
+const imageSrc = "https://www.brewersac.com/wp-content/uploads/2024/08/residential-hvac-service-in-phoenix-brewers-ac.png";
+const imageAlt = "HVAC Services";
 ---
 
 <section class="csa-section">
@@ -90,23 +89,13 @@ const isRight = imagePosition === "right";
 
       <!-- Image side -->
       <div class="csa-img-side">
-        {image ? (
-          <Image
-            src={image}
-            alt={imageAlt}
-            class="csa-img"
-            width={800}
-            height={500}
-            format="webp"
-            quality={75}
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <div class="csa-img csa-img--placeholder">
-            <span>Image</span>
-          </div>
-        )}
+        <img
+          src={imageSrc}
+          alt={imageAlt}
+          class="csa-img"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     </div>
 

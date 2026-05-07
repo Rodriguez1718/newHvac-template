@@ -80,7 +80,17 @@ const isRemoteImage = bgSrc.startsWith('http://') || bgSrc.startsWith('https://'
             </div>
           )}
 
-          <h1 class="hp-title" data-animate="fade-up" data-animate-delay="100">{title}</h1>
+          <h1 class="hp-title" data-animate="fade-up" data-animate-delay="100">
+            {title.split(' ').map((word, idx) => (
+              <span class="hp-title-word" style={`--word-index: ${idx}`}>
+                <span class="hp-title-bg-word"></span>
+                <span class="hp-title-text">{word}</span>
+              </span>
+            )).reduce((acc, curr, idx) => {
+              if (idx === 0) return [curr];
+              return [...acc, ' ', curr];
+            }, [])}
+          </h1>
 
           <!-- Trust indicators -->
           {trustIndicators.length > 0 && (
@@ -208,6 +218,37 @@ const isRemoteImage = bgSrc.startsWith('http://') || bgSrc.startsWith('https://'
     text-transform: uppercase;
     letter-spacing: -0.01em;
     margin-bottom: 1.5rem;
+  }
+
+  .hp-title-word {
+    position: relative;
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.25rem;
+  }
+
+  .hp-title-bg-word {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hp-title-text {
+    position: relative;
+  }
+
+  /* Alternate colors per word */
+  .hp-title-word:nth-child(4n+1) .hp-title-bg-word {
+    background: var(--brand-primary);
+  }
+  .hp-title-word:nth-child(4n+2) .hp-title-bg-word {
+    background: var(--brand-highlight);
+  }
+  .hp-title-word:nth-child(4n+3) .hp-title-bg-word {
+    background: var(--brand-primary);
+  }
+  .hp-title-word:nth-child(4n+4) .hp-title-bg-word {
+    background: var(--brand-highlight);
   }
 
   /* Trust indicators */

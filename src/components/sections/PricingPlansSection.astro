@@ -40,12 +40,11 @@ const bestIndex = plans.findIndex(p => p.ribbonColor === "best");
     <!-- Plans grid -->
     <div class="pp-grid" data-animate-stagger>
       {plans.map((plan, i) => (
-        <div class:list={["pp-card group", { "pp-card--featured": i === bestIndex }]}>
-          <span class="pp-card-accent"></span>
-
-          {/* Ribbon */}
-          <div class="pp-ribbon">
-            <span class="pp-ribbon-text">{plan.ribbon}</span>
+        <div class:list={["pp-card", { "pp-card--featured": i === bestIndex }]}>
+          
+          {/* Diagonal corner badge */}
+          <div class="pp-corner">
+            <span class="pp-corner-label">{plan.ribbon}</span>
           </div>
 
           <div class="pp-card-inner">
@@ -68,6 +67,14 @@ const bestIndex = plans.findIndex(p => p.ribbonColor === "best");
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Bottom discount label */}
+          <div class="pp-bottom-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="pp-scissors-icon">
+              <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>
+            </svg>
+            <span class="pp-bottom-text">GREAT VALUE</span>
           </div>
         </div>
       ))}
@@ -100,6 +107,7 @@ const bestIndex = plans.findIndex(p => p.ribbonColor === "best");
     display: inline-block;
     padding: 0.4rem 1rem;
     background: var(--brand-primary);
+    border-left: 3px solid var(--brand-highlight);
   }
   .pp-title {
     font-size: 2rem;
@@ -128,20 +136,33 @@ const bestIndex = plans.findIndex(p => p.ribbonColor === "best");
   /* ─── Grid ─── */
   .pp-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     max-width: 64rem;
     margin: 0 auto;
-    align-items: end;
+  }
+
+  @media (min-width: 640px) {
+    .pp-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .pp-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
   }
 
   /* Featured card lift */
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .pp-grid > .pp-card--featured {
-      transform: translateY(-1rem);
+      transform: scale(1.08);
+      z-index: 2;
     }
     .pp-grid > .pp-card--featured:hover {
-      transform: translateY(calc(-1rem - 4px));
+      transform: scale(1.08) translateY(-2px);
     }
   }
 
@@ -149,67 +170,67 @@ const bestIndex = plans.findIndex(p => p.ribbonColor === "best");
   .pp-card {
     position: relative;
     background: white;
-    border: 1px solid rgba(0, 0, 0, 0.06);
     overflow: hidden;
-    transition: all 0.35s ease;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .pp-card:hover {
-    border-color: var(--brand-highlight);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   }
 
   /* Featured card */
   .pp-card--featured {
-    border-color: var(--brand-highlight);
-    box-shadow: 0 0 0 1px var(--brand-highlight);
+    border: 3px solid var(--brand-highlight);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   }
   .pp-card--featured:hover {
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--brand-highlight);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
   }
 
-  .pp-card-accent {
+  /* ─── Diagonal Corner ─── */
+  .pp-corner {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--brand-highlight);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.35s ease;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 110px 110px 0 0;
+    border-color: var(--brand-highlight) transparent transparent transparent;
+    z-index: 5;
+    overflow: visible;
   }
-  .pp-card:hover .pp-card-accent {
-    transform: scaleX(1);
-  }
-  .pp-card--featured .pp-card-accent {
-    transform: scaleX(1);
-  }
-
-  /* ─── Ribbon ─── */
-  .pp-ribbon {
-    padding: 0.6rem 1.5rem;
-    background: var(--brand-tertiary);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  }
-  .pp-ribbon-text {
-    font-size: 0.65rem;
-    font-weight: 700;
+  .pp-corner-label {
+    position: absolute;
+    top: -82px;
+    left: 18px;
+    color: #ffffff;
+    font-size: 0.6rem;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--brand-secondary);
-  }
-
-  .pp-card--featured .pp-ribbon {
-    background: var(--brand-primary);
-  }
-  .pp-card--featured .pp-ribbon-text {
-    color: var(--brand-highlight);
+    letter-spacing: 0.04em;
+    transform: rotate(-45deg);
+    white-space: nowrap;
+    line-height: 1;
+    max-width: 90px;
+    overflow: visible;
   }
 
   /* ─── Card Inner ─── */
   .pp-card-inner {
-    padding: 1.75rem 1.5rem 2rem;
+    padding: 7rem 2rem 2rem 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px) {
+    .pp-card-inner {
+      padding: 7rem 2.5rem 2.5rem 2.5rem;
+    }
   }
 
   .pp-plan-title {
@@ -278,11 +299,55 @@ const bestIndex = plans.findIndex(p => p.ribbonColor === "best");
     margin-top: 0.4rem;
   }
 
+  /* ─── Bottom Label ─── */
+  .pp-bottom-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.75rem 2rem;
+    margin: 0 1rem;
+    font-size: 0.65rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--brand-highlight);
+    border-top: 1px dashed #d0d0d0;
+    position: relative;
+  }
+  
+  .pp-scissors-icon {
+    color: var(--brand-highlight);
+    position: absolute;
+    left: 0;
+    top: -12px;
+    background: #ffffff;
+    padding: 0 0.25rem;
+  }
+  
+  .pp-bottom-text {
+    display: inline-block;
+  }
+
   /* ─── Responsive ─── */
-  @media (max-width: 768px) {
-    .pp-grid {
-      grid-template-columns: 1fr;
-      max-width: 24rem;
+  @media (max-width: 639px) {
+    .pp-card-inner {
+      padding: 3.5rem 1.25rem 1.5rem 1.25rem;
+    }
+    .pp-corner {
+      border-width: 90px 90px 0 0;
+    }
+    .pp-corner-label {
+      top: -70px;
+      left: 14px;
+      font-size: 0.55rem;
+    }
+    .pp-price {
+      font-size: 2rem;
+    }
+    .pp-bottom-label {
+      padding: 0.625rem 1.25rem;
+      margin: 0 0.625rem;
+      font-size: 0.6rem;
     }
   }
 </style>

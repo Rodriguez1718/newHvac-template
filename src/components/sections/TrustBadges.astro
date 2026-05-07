@@ -25,8 +25,8 @@ const duplicatedBadges = [...badges, ...badges, ...badges];
 ---
 
 <section class="trust-section relative overflow-hidden">
-  <!-- White background -->
-  <div class="absolute inset-0 bg-white"></div>
+  <!-- Dark background -->
+  <div class="absolute inset-0 bg-brand-primary"></div>
   
 
 
@@ -46,14 +46,14 @@ const duplicatedBadges = [...badges, ...badges, ...badges];
             </svg>
             Trusted By Thousands
           </p>
-          <h2 class="text-base md:text-lg font-black text-black uppercase tracking-[0.05em] leading-tight">{heading}</h2>
+          <h2 class="text-base md:text-lg font-black text-white uppercase tracking-[0.05em] leading-tight">{heading}</h2>
         </div>
       </div>
 
       <!-- Divider with glow -->
       <div class="hidden md:block relative flex-shrink-0">
         <div class="absolute inset-0 bg-brand-highlight blur-md opacity-20"></div>
-        <div class="relative w-px h-12 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+        <div class="relative w-px h-12 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
       </div>
 
       <!-- Right: scrolling badges with backdrop -->
@@ -64,7 +64,7 @@ const duplicatedBadges = [...badges, ...badges, ...badges];
               <img
                 src={badge.image}
                 alt={badge.alt || badge.name}
-                class="h-16 md:h-20 w-auto object-contain transition-all duration-300 hover:scale-110 filter brightness-110 contrast-110"
+                class="h-16 md:h-20 w-auto object-contain transition-all duration-300 hover:scale-110 filter brightness-110 contrast-110 badge-outline"
                 width="156"
                 height="80"
                 loading="lazy"
@@ -106,6 +106,10 @@ const duplicatedBadges = [...badges, ...badges, ...badges];
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .badge-outline {
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
   }
 
   @keyframes scroll {
